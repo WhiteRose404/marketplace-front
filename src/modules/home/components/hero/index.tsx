@@ -75,24 +75,21 @@ const Hero = () => {
           <div className={`space-y-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             
             {/* Dynamic Headlines */}
-            <div className="space-y-6">
-              <div className="h-32 flex items-center">
-                <h1 className="text-4xl md:text-6xl font-light text-stone-900 leading-tight">
-                  {headlines.map((headline, index) => (
-                    <span
-                      key={index}
-                      className={`absolute transition-all duration-700 ${
-                        currentSlide === index 
-                          ? 'opacity-100 translate-y-0' 
-                          : 'opacity-0 translate-y-4'
-                      }`}
-                    >
-                      {headline}
-                    </span>
-                  ))}
-                </h1>
+            <div className="space-y-12">
+              <div className="relative h-32 flex items-center flex-col">
+                {headlines.map((headline, index) => (
+                  <h1
+                    key={index}
+                    className={`absolute text-4xl md:text-6xl font-light text-stone-900 leading-tight transition-all duration-700 ${
+                      currentSlide === index 
+                        ? 'opacity-100 translate-y-0' 
+                        : 'opacity-0 translate-y-4'
+                    }`}
+                  >
+                    {headline}
+                  </h1>
+                ))}
               </div>
-              
               <p className="text-xl text-stone-600 font-light leading-relaxed max-w-lg">
                 Shop authentic pieces from independent creators and studios across the MENA region
               </p>
