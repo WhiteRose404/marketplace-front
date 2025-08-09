@@ -1,25 +1,36 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useActionState } from 'react';
 import { 
   Eye, 
   EyeOff, 
   Mail, 
   Lock, 
-  User, 
   Phone, 
   MapPin, 
   Store, 
-  Image,
   ArrowRight,
-  Check,
   Star,
   TrendingUp,
   Users,
   Palette,
-  Heart,
-  Globe
 } from 'lucide-react';
+import Link from 'next/link';
+import { login } from '@lib/data/vendor';
+
+type FormData = {
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  storeName?: string;
+  storeDescription?: string;
+  location?: string;
+  category?: string;
+  website?: string;
+}
 
 const VendorPortal = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -41,7 +52,7 @@ const VendorPortal = () => {
     website: ''
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormData>({});
 
   useEffect(() => {
     setIsVisible(true);
@@ -51,6 +62,9 @@ const VendorPortal = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const [state, formAction] = useActionState(login, null);
+
+  
   const testimonials = [
     {
       text: "When.ma helped me reach customers across MENA I never could before",
@@ -90,8 +104,12 @@ const VendorPortal = () => {
     { icon: Palette, title: 'Beautiful Storefronts', desc: 'Professional product pages that convert browsers to buyers' }
   ];
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: { target : { name: string, value: string }}) => {
     const { name, value } = e.target;
+    if( name !== 'firstName' && name !== 'lastName' && name !== 'storeName' && name !== 'email' && name !== 'password' && name !== 'confirmPassword' && name !== 'category' && name !== 'phone' && name !== 'location' && name !== 'website') {
+      console.warn(`Unexpected field: ${name}`);
+      return;
+    }
     setFormData(prev => ({ ...prev, [name]: value }));
     
     // Clear error when user starts typing
@@ -123,13 +141,16 @@ const VendorPortal = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      console.log('Form submitted:', formData);
-      // Handle authentication logic here
-    }
-  };
+  // const handleSubmit = (e: any) => {
+  //   e.preventDefault();
+  //   if (validateForm()) {
+  //     console.log('Form submitted:', formData);
+  //     // Handle authentication logic here
+      
+  //   }
+  // };
+
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-white to-amber-50/30 flex">
@@ -140,9 +161,9 @@ const VendorPortal = () => {
           
           {/* Header */}
           <div className="text-center mb-8">
-            <a href="/" className="inline-block mb-6">
+            <Link href="/" className="inline-block mb-6">
               <span className="text-3xl font-light text-stone-900">when</span>
-            </a>
+            </Link>
             <h1 className="text-2xl font-light text-stone-900 mb-2">
               {isLogin ? 'Welcome back, creator' : 'Join the When community'}
             </h1>
@@ -175,7 +196,9 @@ const VendorPortal = () => {
           </div>
 
           {/* Form */}
-          <div onSubmit={handleSubmit} className="space-y-6">
+          <form className="space-y-6" 
+            action={formAction}
+          >
             
             {/* Personal Info (Register only) */}
             {!isLogin && (
@@ -326,7 +349,7 @@ const VendorPortal = () => {
                       <Phone className="h-5 w-5 text-stone-400" />
                     </div>
                     <input
-                      type="tel"
+                      type="number"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
@@ -354,15 +377,17 @@ const VendorPortal = () => {
             {/* Forgot Password (Login only) */}
             {isLogin && (
               <div className="text-right">
-                <a href="/forgot-password" className="text-sm text-amber-600 hover:text-amber-700 transition-colors">
+                <Link href="/forgot-password" className="text-sm text-amber-600 hover:text-amber-700 transition-colors">
                   Forgot password?
-                </a>
+                </Link>
               </div>
             )}
 
             {/* Submit Button */}
             <button
-              onClick={handleSubmit}
+              // onClick={handleSubmit}
+              formAction={formAction}
+              data-testid="sign-in-button"
               className="w-full bg-stone-900 text-white py-3 rounded-xl hover:bg-stone-800 transition-all font-medium flex items-center justify-center gap-2 group"
             >
               {isLogin ? 'Sign In' : 'Create Store'}
@@ -383,11 +408,11 @@ const VendorPortal = () => {
 
             {/* Social Auth */}
             <div className="grid grid-cols-2 gap-3">
-              <button className="flex items-center justify-center gap-2 py-3 px-4 border border-stone-200 rounded-xl hover:border-amber-400 hover:bg-stone-50 transition-all text-sm font-medium">
+              <button disabled className="flex items-center justify-center gap-2 py-3 px-4 border border-stone-200 rounded-xl hover:border-amber-400 hover:bg-stone-50 transition-all text-sm font-medium">
                 <div className="w-5 h-5 bg-blue-600 rounded"></div>
                 Facebook
               </button>
-              <button className="flex items-center justify-center gap-2 py-3 px-4 border border-stone-200 rounded-xl hover:border-amber-400 hover:bg-stone-50 transition-all text-sm font-medium">
+              <button disabled className="flex items-center justify-center gap-2 py-3 px-4 border border-stone-200 rounded-xl hover:border-amber-400 hover:bg-stone-50 transition-all text-sm font-medium">
                 <div className="w-5 h-5 bg-red-500 rounded"></div>
                 Google
               </button>
@@ -397,12 +422,12 @@ const VendorPortal = () => {
             {!isLogin && (
               <p className="text-xs text-stone-500 text-center leading-relaxed">
                 By creating an account, you agree to our{' '}
-                <a href="/terms" className="text-amber-600 hover:text-amber-700">Terms of Service</a>
+                <Link href="/terms" className="text-amber-600 hover:text-amber-700">Terms of Service</Link>
                 {' '}and{' '}
-                <a href="/privacy" className="text-amber-600 hover:text-amber-700">Privacy Policy</a>
+                <Link href="/privacy" className="text-amber-600 hover:text-amber-700">Privacy Policy</Link>
               </p>
             )}
-          </div>
+          </form>
         </div>
       </div>
 
