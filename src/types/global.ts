@@ -47,3 +47,48 @@ export type Vendor = prebuilt & {
 export type Orders = prebuilt & {
 
 }
+
+interface BaseItem {
+  id: string;
+  image?: string;
+  date: string;
+}
+
+// Order-specific fields
+export interface OrderItem extends BaseItem {
+  type: 'order';
+  customer: string;
+  product: string;
+  amount: string;
+  status: 'completed' | 'processing' | 'shipped' | 'pending' | 'cancelled';
+}
+
+export interface ProductItem extends BaseItem {
+  type: 'product';
+  name: string;
+  category: string;
+  price: string;
+  stock: number;
+  status: 'active' | 'draft' | 'out_of_stock' | 'archived';
+}
+
+// Review-specific fields (example of future extension)
+export interface ReviewItem extends BaseItem {
+  type: 'review';
+  customer: string;
+  product: string;
+  rating: number;
+  comment: string;
+  status: 'new' | 'responded' | 'flagged';
+}
+
+// Union type for all possible items
+export type EventItem = OrderItem | ProductItem | ReviewItem;
+
+export interface RecentEventsProps {
+  title: string;
+  items: EventItem[];
+  onViewAll?: () => void;
+  showFilter?: boolean;
+  maxItems?: number;
+}

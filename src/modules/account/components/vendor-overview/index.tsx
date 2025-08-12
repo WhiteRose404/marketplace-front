@@ -2,12 +2,12 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { 
-  TrendingUp, 
+import {
+  TrendingUp,
   TrendingDown,
-  Package, 
-  ShoppingCart, 
-  Users, 
+  Package,
+  ShoppingCart,
+  Users,
   Eye,
   Star,
   DollarSign,
@@ -28,28 +28,62 @@ import {
   XCircle
 } from 'lucide-react';
 import ProductCreationForm from "@modules/account/components/vendor-add-product"
+import RecentEvents from '../vendor-recent-events';
 
-
-import { VendorAdmin } from 'types/global';
-import { Vendor } from 'types/global';
+import { OrderItem, ProductItem, ReviewItem, VendorAdmin, Vendor } from 'types/global';
 
 type VendorProduct = {
+  title: string,
+  description: string,
+  category: string,
+  images: string[],
+  options: { title: string, values: string[] }[],
+  variants: {
     title: string,
-    description: string,
-    category: string,
-    images: string[],
-    options: { title: string, values: string[] }[],
-    variants: {
-        title: string,
-        prices: { currency_code: string, amount: string }[],
-        manage_inventory: boolean,
-        options: any,
-        sku: string,
-        inventory: string
-    }[]
+    prices: { currency_code: string, amount: string }[],
+    manage_inventory: boolean,
+    options: any,
+    sku: string,
+    inventory: string
+  }[]
 }
 
-const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: { vendor: Vendor, vendorAdmin: VendorAdmin, vendorOrders: any, namedCategories: string[] }) => {
+const getStatusIcon = (status: string) => {
+  switch (status) {
+    case 'completed':
+      return <CheckCircle className="w-3 h-3" />;
+    case 'processing':
+      return <Clock className="w-3 h-3" />;
+    case 'shipped':
+      return <Package className="w-3 h-3" />;
+    case 'pending':
+      return <AlertTriangle className="w-3 h-3" />;
+    case 'cancelled':
+      return <XCircle className="w-3 h-3" />;
+    default:
+      return <Clock className="w-3 h-3" />;
+  }
+};
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'completed':
+      return 'bg-green-100 text-green-700 border-green-200';
+    case 'processing':
+      return 'bg-blue-100 text-blue-700 border-blue-200';
+    case 'shipped':
+      return 'bg-purple-100 text-purple-700 border-purple-200';
+    case 'pending':
+      return 'bg-amber-100 text-amber-700 border-amber-200';
+    case 'cancelled':
+      return 'bg-red-100 text-red-700 border-red-200';
+    default:
+      return 'bg-stone-100 text-stone-700 border-stone-200';
+  }
+};
+
+
+const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: { vendor: Vendor, vendorAdmin: VendorAdmin, vendorOrders: any[], namedCategories: string[] }) => {
   const [selectedPeriod, setSelectedPeriod] = useState('7d');
   const [isVisible, setIsVisible] = useState(false);
   const [isProductCreatingOpen, setIsProductCreatingOpen] = useState(false);
@@ -58,7 +92,7 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
     console.log('Submitting product:', productData);
     // Here you would make your API call
     // await fetch('/api/products', { method: 'POST', body: JSON.stringify(productData) })
-    
+
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 2000));
   };
@@ -115,6 +149,47 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
     }
   };
 
+  const transformedOrders: OrderItem[] = vendorOrders.map(order => ({
+    id: order.id,
+    type: 'order' as const,
+    customer: order.customer,
+    product: order.product,
+    amount: order.amount,
+    status: order.status,
+    date: order.date,
+    image: order.image
+  }));
+
+  // Example product data
+  const recentProducts: ProductItem[] = [
+    {
+      id: "PRD-001",
+      type: 'product' as const,
+      name: "Handwoven Berber Carpet",
+      category: "Textiles",
+      price: "2,890 MAD",
+      stock: 5,
+      status: 'active',
+      date: "2025-08-11",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=60&h=60&fit=crop"
+    },
+  ];
+
+  // Example review data
+  const recentReviews: ReviewItem[] = [
+    {
+      id: "REV-001",
+      type: 'review' as const,
+      customer: "Amina Benali",
+      product: "Ceramic Tagine Set",
+      rating: 5,
+      comment: "Beautiful craftsmanship, exactly as described!",
+      status: 'new',
+      date: "2025-08-11",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=60&h=60&fit=crop"
+    },
+    // ... more reviews
+  ];
   const recentOrders = [
     {
       id: "ORD-001",
@@ -126,7 +201,7 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
       image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=60&h=60&fit=crop"
     },
     {
-      id: "ORD-002", 
+      id: "ORD-002",
       customer: "Youssef Ahmed",
       product: "Ceramic Tagine Set",
       amount: "650 MAD",
@@ -138,7 +213,7 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
       id: "ORD-003",
       customer: "Fatima Zahra",
       product: "Silver Jewelry Collection",
-      amount: "1,200 MAD", 
+      amount: "1,200 MAD",
       status: "shipped",
       date: "2025-08-09",
       image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=60&h=60&fit=crop"
@@ -163,7 +238,7 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
       image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=60&h=60&fit=crop"
     },
     {
-      name: "Ceramic Tagine Set", 
+      name: "Ceramic Tagine Set",
       sales: 8,
       revenue: "5,200 MAD",
       views: 892,
@@ -190,7 +265,7 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
       type: "review",
       title: "New 5-star review",
       message: "\"Beautiful craftsmanship, exactly as described!\"",
-      time: "4 hours ago", 
+      time: "4 hours ago",
       unread: true
     },
     {
@@ -206,39 +281,9 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
     setIsVisible(true);
   }, []);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-700 border-green-200';
-      case 'processing':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'shipped':
-        return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'pending':
-        return 'bg-amber-100 text-amber-700 border-amber-200';
-      case 'cancelled':
-        return 'bg-red-100 text-red-700 border-red-200';
-      default:
-        return 'bg-stone-100 text-stone-700 border-stone-200';
-    }
-  };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle className="w-3 h-3" />;
-      case 'processing':
-        return <Clock className="w-3 h-3" />;
-      case 'shipped':
-        return <Package className="w-3 h-3" />;
-      case 'pending':
-        return <AlertTriangle className="w-3 h-3" />;
-      case 'cancelled':
-        return <XCircle className="w-3 h-3" />;
-      default:
-        return <Clock className="w-3 h-3" />;
-    }
-  };
+
+
 
   const MetricCard = ({ title, value, change, icon: Icon, prefix = "", suffix = "" }: any) => (
     <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
@@ -246,9 +291,8 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
         <div className="w-12 h-12 bg-stone-100 rounded-xl flex items-center justify-center">
           <Icon className="w-6 h-6 text-stone-600" />
         </div>
-        <div className={`flex items-center gap-1 text-sm font-medium ${
-          change > 0 ? 'text-green-600' : 'text-red-600'
-        }`}>
+        <div className={`flex items-center gap-1 text-sm font-medium ${change > 0 ? 'text-green-600' : 'text-red-600'
+          }`}>
           {change > 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
           {Math.abs(change)}%
         </div>
@@ -272,11 +316,11 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
       />
       <div className="min-h-screen bg-gradient-to-br from-stone-50 via-white to-amber-50/30 p-6">
         <div className="max-w-7xl mx-auto space-y-8">
-          
+
           {/* Header */}
           <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              
+
               {/* Vendor Profile */}
               <div className="flex items-center gap-4">
                 <div className="relative">
@@ -319,12 +363,12 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
                     <option value="3m">Last 3 months</option>
                     <option value="1y">Last year</option>
                   </select>
-                  
+
                   {/* <button className="p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded-xl transition-all">
                     <Download className="w-5 h-5" />
                   </button> */}
                 </div>
-                
+
                 <button onClick={() => setIsProductCreatingOpen(true)} className="px-4 py-2 bg-stone-900 text-white rounded-xl hover:bg-stone-800 transition-all font-medium flex items-center gap-2">
                   <Plus className="w-4 h-4" />
                   Add Product
@@ -371,55 +415,32 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
 
           {/* Main Content Grid */}
           <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            
+
             {/* Recent Orders */}
-            <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm">
-              <div className="p-6 border-b border-stone-100">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-medium text-stone-900">Recent Orders</h2>
-                  <div className="flex items-center gap-2">
-                    <button className="p-2 text-stone-400 hover:text-stone-600 rounded-lg transition-colors">
-                      <Filter className="w-4 h-4" />
-                    </button>
-                    <button className="text-sm text-amber-600 hover:text-amber-700 font-medium">
-                      View all
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6 space-y-4">
-                {recentOrders.map((order) => (
-                  <div key={order.id} className="flex items-center gap-4 p-4 hover:bg-stone-50 rounded-xl transition-colors">
-                    <img
-                      src={order.image}
-                      alt={order.product}
-                      className="w-12 h-12 rounded-lg object-cover"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="font-medium text-stone-900 truncate">{order.customer}</p>
-                        <span className="text-stone-900 font-semibold">{order.amount}</span>
-                      </div>
-                      <p className="text-sm text-stone-600 truncate">{order.product}</p>
-                      <div className="flex items-center gap-3 mt-2">
-                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}>
-                          {getStatusIcon(order.status)}
-                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                        </span>
-                        <span className="text-xs text-stone-500">{order.date}</span>
-                      </div>
-                    </div>
-                    <button className="p-2 text-stone-400 hover:text-stone-600 rounded-lg transition-colors">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <RecentEvents
+              title="Recent Orders"
+              items={transformedOrders}
+              onViewAll={() => console.log('View all orders')}
+              maxItems={5}
+            />
+            {/* <RecentEvents
+              title="Recent Products"
+              items={recentProducts}
+              onViewAll={() => console.log('View all products')}
+              maxItems={3}
+            /> */}
+
+            {/* <RecentEvents
+              title="Recent Reviews"
+              items={recentReviews}
+              onViewAll={() => console.log('View all reviews')}
+              showFilter={false}
+              maxItems={4}
+            /> */}
 
             {/* Notifications & Quick Stats */}
             <div className="space-y-6">
-              
+
               {/* Notifications */}
               <div className="bg-white rounded-2xl shadow-sm">
                 <div className="p-6 border-b border-stone-100">
@@ -430,14 +451,12 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
                 </div>
                 <div className="p-6 space-y-4">
                   {notifications.slice(0, 3).map((notification, index) => (
-                    <div key={index} className={`flex items-start gap-3 p-3 rounded-xl transition-colors ${
-                      notification.unread ? 'bg-amber-50 border border-amber-100' : 'hover:bg-stone-50'
-                    }`}>
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        notification.type === 'order' ? 'bg-blue-100 text-blue-600' :
-                        notification.type === 'review' ? 'bg-green-100 text-green-600' :
-                        'bg-amber-100 text-amber-600'
+                    <div key={index} className={`flex items-start gap-3 p-3 rounded-xl transition-colors ${notification.unread ? 'bg-amber-50 border border-amber-100' : 'hover:bg-stone-50'
                       }`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${notification.type === 'order' ? 'bg-blue-100 text-blue-600' :
+                        notification.type === 'review' ? 'bg-green-100 text-green-600' :
+                          'bg-amber-100 text-amber-600'
+                        }`}>
                         {notification.type === 'order' && <ShoppingCart className="w-4 h-4" />}
                         {notification.type === 'review' && <Star className="w-4 h-4" />}
                         {notification.type === 'stock' && <Package className="w-4 h-4" />}
