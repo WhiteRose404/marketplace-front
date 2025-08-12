@@ -29,8 +29,9 @@ import {
 } from 'lucide-react';
 import ProductCreationForm from "@modules/account/components/vendor-add-product"
 import RecentEvents from '../vendor-recent-events';
+import { getTheEventTime, getThePreviousEventTime } from "../../../../lib/util/vendor-event-time";
 
-import { OrderItem, ProductItem, ReviewItem, VendorAdmin, Vendor } from 'types/global';
+import { OrderItem, ProductItem, ReviewItem, VendorAdmin, Vendor, Orders } from 'types/global';
 
 type VendorProduct = {
   title: string,
@@ -48,42 +49,42 @@ type VendorProduct = {
   }[]
 }
 
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return <CheckCircle className="w-3 h-3" />;
-    case 'processing':
-      return <Clock className="w-3 h-3" />;
-    case 'shipped':
-      return <Package className="w-3 h-3" />;
-    case 'pending':
-      return <AlertTriangle className="w-3 h-3" />;
-    case 'cancelled':
-      return <XCircle className="w-3 h-3" />;
-    default:
-      return <Clock className="w-3 h-3" />;
-  }
-};
+// const getStatusIcon = (status: string) => {
+//   switch (status) {
+//     case 'completed':
+//       return <CheckCircle className="w-3 h-3" />;
+//     case 'processing':
+//       return <Clock className="w-3 h-3" />;
+//     case 'shipped':
+//       return <Package className="w-3 h-3" />;
+//     case 'pending':
+//       return <AlertTriangle className="w-3 h-3" />;
+//     case 'cancelled':
+//       return <XCircle className="w-3 h-3" />;
+//     default:
+//       return <Clock className="w-3 h-3" />;
+//   }
+// };
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return 'bg-green-100 text-green-700 border-green-200';
-    case 'processing':
-      return 'bg-blue-100 text-blue-700 border-blue-200';
-    case 'shipped':
-      return 'bg-purple-100 text-purple-700 border-purple-200';
-    case 'pending':
-      return 'bg-amber-100 text-amber-700 border-amber-200';
-    case 'cancelled':
-      return 'bg-red-100 text-red-700 border-red-200';
-    default:
-      return 'bg-stone-100 text-stone-700 border-stone-200';
-  }
-};
+// const getStatusColor = (status: string) => {
+//   switch (status) {
+//     case 'completed':
+//       return 'bg-green-100 text-green-700 border-green-200';
+//     case 'processing':
+//       return 'bg-blue-100 text-blue-700 border-blue-200';
+//     case 'shipped':
+//       return 'bg-purple-100 text-purple-700 border-purple-200';
+//     case 'pending':
+//       return 'bg-amber-100 text-amber-700 border-amber-200';
+//     case 'cancelled':
+//       return 'bg-red-100 text-red-700 border-red-200';
+//     default:
+//       return 'bg-stone-100 text-stone-700 border-stone-200';
+//   }
+// };
 
 
-const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: { vendor: Vendor, vendorAdmin: VendorAdmin, vendorOrders: any[], namedCategories: string[] }) => {
+const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: { vendor: Vendor, vendorAdmin: VendorAdmin, vendorOrders: Orders[] | null, namedCategories: string[] }) => {
   const [selectedPeriod, setSelectedPeriod] = useState('7d');
   const [isVisible, setIsVisible] = useState(false);
   const [isProductCreatingOpen, setIsProductCreatingOpen] = useState(false);
@@ -96,6 +97,15 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 2000));
   };
+
+
+  // get the order data
+  const currentOrderData: any[] | undefined = getTheEventTime(vendorOrders, "7d");
+  const previousOrderData: any[] | undefined = getThePreviousEventTime(vendorOrders, "7d");
+
+  // get the revenu
+  const currentRevenuStrem = currentOrderData?.reduce((order) => order.price, 0);
+  const previousRevenuStrem = previousOrderData?.reduce((order) => order.price, 0);
 
   // Mock vendor data - replace with your actual data
   const vendorData = {
@@ -121,35 +131,35 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
 
   const analytics = {
     revenue: {
-      current: 12450,
-      previous: 10230,
-      change: 21.7,
+      current: currentRevenuStrem,
+      previous: previousRevenuStrem,
+      change: previousRevenuStrem === 0 ? 0 : (currentRevenuStrem - previousRevenuStrem) / previousRevenuStrem,
       currency: 'MAD'
     },
     orders: {
-      current: 89,
-      previous: 76,
-      change: 17.1
+      current: currentOrderData?.length,
+      previous: previousOrderData?.length,
+      change: (currentOrderData || currentOrderData?.length === 0 ) ? 0 : ( ( previousOrderData || previousOrderData?.length === 0) ? currentOrderData?.length : (currentOrderData?.length-previousOrderData?.length) / previousOrderData?.length) 
     },
     visitors: {
-      current: 2847,
-      previous: 2156,
-      change: 32.1
+      current: 2847, // to do fetch vistors from the vendor itself
+      previous: 2156, 
+      change: 32.1 // the same rule
     },
     products: {
-      current: 24,
+      current: 24, // also fetch product and apply that
       active: 21,
       draft: 3,
       outOfStock: 2
     },
     conversion: {
-      current: 3.2,
+      current: 3.2, // stored in the vendor double state or calculated from 
       previous: 2.8,
       change: 14.3
     }
   };
 
-  const transformedOrders: OrderItem[] = vendorOrders.map(order => ({
+  const transformedOrders: OrderItem[] | undefined = vendorOrders?.map(order => ({
     id: order.id,
     type: 'order' as const,
     customer: order.customer,
@@ -161,7 +171,7 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
   }));
 
   // Example product data
-  const recentProducts: ProductItem[] = [
+  const recentProducts: ProductItem[] | undefined = [
     {
       id: "PRD-001",
       type: 'product' as const,
@@ -176,7 +186,7 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories }: 
   ];
 
   // Example review data
-  const recentReviews: ReviewItem[] = [
+  const recentReviews: ReviewItem[] | undefined = [
     {
       id: "REV-001",
       type: 'review' as const,

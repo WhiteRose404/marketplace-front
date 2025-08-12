@@ -44,9 +44,7 @@ export type Vendor = prebuilt & {
     name:   string
 }
 
-export type Orders = prebuilt & {
-
-}
+export type Orders = any
 
 interface BaseItem {
   id: string;

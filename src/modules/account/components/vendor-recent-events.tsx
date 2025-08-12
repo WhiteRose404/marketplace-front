@@ -55,7 +55,7 @@ type EventItem = OrderItem | ProductItem | ReviewItem;
 
 interface RecentEventsProps {
   title: string;
-  items: EventItem[];
+  items: EventItem[] | undefined;
   onViewAll?: () => void;
   showFilter?: boolean;
   maxItems?: number;
@@ -68,7 +68,7 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
   showFilter = true,
   maxItems = 10
 }) => {
-  const displayItems = items.slice(0, maxItems);
+  const displayItems = items?.slice(0, maxItems);
 
   const getStatusIcon = (status: string) => {
     const iconMap: { [key: string]: JSX.Element } = {
@@ -231,7 +231,7 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
     }
   };
 
-  if (displayItems.length === 0) {
+  if (!displayItems || displayItems.length === 0) {
     return (
       <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm">
         <div className="p-6 border-b border-stone-100">
