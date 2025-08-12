@@ -1,4 +1,4 @@
-import { retrieveVendor } from "@lib/data/vendor"
+import { retrieveVendor, retrieveVendorAdmin } from "@lib/data/vendor"
 import { Toaster } from "@medusajs/ui"
 import AccountLayout from "@modules/account/vendor/vendor-layout"
 
@@ -9,8 +9,7 @@ export default async function AccountPageLayout({
   dashboard?: React.ReactNode
   login?: React.ReactNode
 }) {
-  const customer = await retrieveVendor().catch(() => null)
-  console.log('customer is not valid ?', customer)
+  const customer = await retrieveVendorAdmin().catch(() => null)
   return (
     <AccountLayout customer={customer}>
       {customer ? dashboard : login}

@@ -1,22 +1,22 @@
-import { Metadata } from "next"
+import { retrieveOrders, retrieveVendor, retrieveVendorAdmin } from "@lib/data/vendor";
+import VendorOverview from "@modules/account/components/vendor-overview";
+import NotFound from "app/not-found";
 
-import Overview from "@modules/account/components/overview"
-import { notFound } from "next/navigation"
-import { retrieveCustomer } from "@lib/data/customer"
-import { listOrders } from "@lib/data/orders"
+import { Orders, VendorAdmin } from 'types/global';
+import { Vendor } from 'types/global';
 
-export const metadata: Metadata = {
-  title: "Account",
-  description: "Overview of your account activity.",
-}
+const VendorDashboard = async () => {
+  const vendor: Vendor | null = await retrieveVendor().catch(() => null)
+  const vendorAdmin: VendorAdmin | null = await retrieveVendorAdmin().catch(() => null)
+  const vendorOrders: Orders[] | null = await retrieveOrders().catch(() => null)
+  console.log("vendor", vendorOrders)
 
-export default async function OverviewTemplate() {
-  const customer = await retrieveCustomer().catch(() => null)
-  const orders = (await listOrders().catch(() => null)) || null
-
-  if (!customer) {
-    notFound()
+  if(!vendor || !vendorAdmin){
+    return NotFound();
   }
+  return (
+    <VendorOverview vendor={vendor} vendorAdmin={vendorAdmin}/>
+  );
+};
 
-  return <p>looped</p>
-}
+export default VendorDashboard;

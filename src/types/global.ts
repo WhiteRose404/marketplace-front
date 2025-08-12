@@ -22,3 +22,28 @@ export type StoreFreeShippingPrice = StorePrice & {
   target_remaining: number
   remaining_percentage: number
 }
+
+type prebuilt = {
+    id:         string
+    created_at: string
+    updated_at: string
+    deleted_at: string | null
+}
+
+
+export type VendorAdmin = prebuilt & {
+    email:      string
+    first_name: string
+    last_name:  string
+    vendor_id:  string
+}
+
+export type Vendor = prebuilt & {
+    handle: string
+    logo:   string | null
+    name:   string
+}
+
+export type Orders = prebuilt & {
+
+}

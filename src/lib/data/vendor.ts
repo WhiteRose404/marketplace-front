@@ -14,9 +14,10 @@ import {
   removeCartId,
   setAuthToken,
 } from "./cookies"
+import { Vendor, VendorAdmin, Orders } from "types/global"
 
-export const retrieveVendor =
-  async (): Promise<HttpTypes.StoreCustomer | null> => {
+export const retrieveVendorAdmin =
+  async (): Promise<VendorAdmin | null> => {
     const authHeaders = await getAuthHeaders()
 
     if (!authHeaders) return null
@@ -30,7 +31,7 @@ export const retrieveVendor =
     }
 
     return await sdk.client
-      .fetch<{ vendor: HttpTypes.StoreCustomer }>(`/store/vendors/me`, {
+      .fetch<{ vendor: VendorAdmin }>(`/vendors/me`, {
         method: "GET",
         query: {
           fields: "*orders",
@@ -40,6 +41,62 @@ export const retrieveVendor =
         cache: "force-cache",
       })
       .then(({ vendor }) => vendor)
+      .catch(() => null)
+  }
+
+export const retrieveVendor =
+  async (): Promise<Vendor | null> => {
+    const authHeaders = await getAuthHeaders()
+
+    if (!authHeaders) return null
+
+    const headers = {
+      ...authHeaders,
+    }
+
+    const next = {
+      ...(await getCacheOptions("vendors")),
+    }
+
+    return await sdk.client
+      .fetch<{ vendor: Vendor }>(`/vendors/vendor`, {
+        method: "GET",
+        query: {
+          fields: "*orders",
+        },
+        headers,
+        next,
+        cache: "force-cache",
+      })
+      .then(({ vendor }) => vendor)
+      .catch(() => null)
+  }
+
+export const retrieveOrders =
+  async (): Promise<Orders[] | null> => {
+    const authHeaders = await getAuthHeaders()
+
+    if (!authHeaders) return null
+
+    const headers = {
+      ...authHeaders,
+    }
+
+    const next = {
+      ...(await getCacheOptions("vendors")),
+    }
+
+    return await sdk.client
+      .fetch<{ orders: Orders[] }>(`/vendors/orders`, {
+        method: "GET",
+        query: {
+          fields: "*items",
+        },
+        headers,
+        next,
+        cache: "force-cache",
+      })
+      .then(({ orders }) => orders)
       .catch(() => null)
   }
 
