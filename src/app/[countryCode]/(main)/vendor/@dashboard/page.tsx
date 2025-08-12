@@ -1,3 +1,5 @@
+import { listCategories } from "@lib/data/categories";
+import { retrieveCollection } from "@lib/data/collections";
 import { retrieveOrders, retrieveVendor, retrieveVendorAdmin } from "@lib/data/vendor";
 import VendorOverview from "@modules/account/components/vendor-overview";
 import NotFound from "app/not-found";
@@ -9,13 +11,14 @@ const VendorDashboard = async () => {
   const vendor: Vendor | null = await retrieveVendor().catch(() => null)
   const vendorAdmin: VendorAdmin | null = await retrieveVendorAdmin().catch(() => null)
   const vendorOrders: Orders[] | null = await retrieveOrders().catch(() => null)
-  console.log("vendor", vendorOrders)
+  const collection = await listCategories();
+  console.log("vendor", collection)
 
   if(!vendor || !vendorAdmin){
     return NotFound();
   }
   return (
-    <VendorOverview vendor={vendor} vendorAdmin={vendorAdmin}/>
+    <VendorOverview vendor={vendor} vendorAdmin={vendorAdmin} namedCategories={collection.map(collection => collection.name )} vendorOrders={vendorOrders}/>
   );
 };
 
