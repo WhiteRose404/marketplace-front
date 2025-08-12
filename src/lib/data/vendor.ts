@@ -66,7 +66,7 @@ export const retrieveVendor =
         },
         headers,
         next,
-        cache: "force-cache",
+        // cache: "force-cache",
       })
       .then(({ vendor }) => vendor)
       .catch(() => null)
