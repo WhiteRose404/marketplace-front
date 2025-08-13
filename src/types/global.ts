@@ -42,9 +42,11 @@ export type Vendor = prebuilt & {
     handle: string
     logo:   string | null
     name:   string
+    vistors: number
 }
 
 export type Orders = any
+export type CustomeProducts = any
 
 interface BaseItem {
   id: string;

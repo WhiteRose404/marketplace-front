@@ -1,8 +1,6 @@
 "use server"
 
 import { sdk } from "@lib/config"
-import medusaError from "@lib/util/medusa-error"
-import { HttpTypes } from "@medusajs/types"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import {
@@ -15,6 +13,7 @@ import {
   setAuthToken,
 } from "./cookies"
 import { Vendor, VendorAdmin, Orders } from "types/global"
+import { StoreProduct } from "@medusajs/types"
 
 export const retrieveVendorAdmin =
   async (): Promise<VendorAdmin | null> => {
@@ -38,7 +37,7 @@ export const retrieveVendorAdmin =
         },
         headers,
         next,
-        cache: "force-cache",
+        // cache: "force-cache",
       })
       .then(({ vendor }) => vendor)
       .catch(() => null)
@@ -94,11 +93,40 @@ export const retrieveOrders =
         },
         headers,
         next,
-        cache: "force-cache",
+        // cache: "force-cache",
       })
       .then(({ orders }) => orders)
       .catch(() => null)
   }
+
+export const retrieveProducts =
+  async (): Promise<StoreProduct[] | null> => {
+    const authHeaders = await getAuthHeaders()
+
+    if (!authHeaders) return null
+
+    const headers = {
+      ...authHeaders,
+    }
+
+    const next = {
+      ...(await getCacheOptions("vendor_products")),
+    }
+
+    return await sdk.client
+      .fetch<{ products: StoreProduct[] }>(`/vendors/products`, {
+        method: "GET",
+        query: {
+          // fields: "*items",
+        },
+        headers,
+        next,
+        // cache: "force-cache",
+      })
+      .then(({ products }) => products)
+      .catch(() => null)
+  }
+
 
 // export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
 //   const headers = {
