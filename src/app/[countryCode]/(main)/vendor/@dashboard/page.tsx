@@ -14,7 +14,7 @@ const VendorDashboard = async () => {
   const vendorOrders: Orders[] | null = await retrieveOrders().catch(() => null);
   const vendorProducts = await retrieveProducts().catch(() => null);
   const collection = await listCategories();
-  console.log("vendor", vendorProducts);
+  console.log("vendor", vendor);
 
   if(!vendor || !vendorAdmin){
     return NotFound();

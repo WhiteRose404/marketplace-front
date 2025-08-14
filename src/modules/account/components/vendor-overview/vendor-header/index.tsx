@@ -1,34 +1,19 @@
 "use client";
 
-
 import React, { useState, useEffect } from 'react';
 import {
-  TrendingUp,
-  Package,
-  ShoppingCart,
-  Users,
-  Eye,
   Star,
-  DollarSign,
-  Settings,
   Plus,
-  MessageSquare,
 } from 'lucide-react';
 import ProductCreationForm from "@modules/account/components/vendor-add-product"
-import RecentEvents from '../vendor-recent-events';
-import MetricCard from '../vendor-metrics';
-
-import { getTheEventTime, getThePreviousEventTime } from "../../../../lib/util/vendor-event-time";
-
-import { OrderItem, ProductItem, ReviewItem, VendorAdmin, Vendor, Orders } from 'types/global';
-import { HttpTypes } from '@medusajs/types';
-import { getProductPrice } from '@lib/util/get-product-price';
-import { Product } from '@medusajs/js-sdk/dist/admin/product';
-
 
 const VendorHeader = ({ vendorData, selectedPeriod, handleSubmit, namedCategories }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [isProductCreatingOpen, setIsProductCreatingOpen] = useState(false);
+
+    useEffect(() => {
+        setIsVisible(true)
+    });
     return (
         <>
             <ProductCreationForm
@@ -44,7 +29,7 @@ const VendorHeader = ({ vendorData, selectedPeriod, handleSubmit, namedCategorie
                 <div className="flex items-center gap-4">
                     <div className="relative">
                     <img
-                        src={vendorData.vendor.logo || `https://ui-avatars.com/api/?name=${vendor.name}`}
+                        src={vendorData.vendor.logo || `https://ui-avatars.com/api/?name=${vendorData.vendor.name}`}
                         alt={`${vendorData.vendorAdmin.first_name} ${vendorData.vendorAdmin.last_name}`}
                         className="w-16 h-16 rounded-2xl object-cover"
                     />
