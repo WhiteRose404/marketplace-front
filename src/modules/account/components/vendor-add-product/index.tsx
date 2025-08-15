@@ -42,7 +42,7 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories }: any
     description: '',
     category: '',
     status: 'published',
-    images: [],
+    // images: [],
     options: [{ title: 'Color', values: [''] }],
     variants: [{
       title: '',
@@ -196,24 +196,24 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories }: any
     setFormData(prev => ({ ...prev, variants: newVariants }));
   };
 
-  const handleImageUpload = async (e: { target: { files: FileList}}) => {
-    const files = Array.from(e.target.files);
-    console.log("butes", files, formData)
-    // In real implementation, you'd upload these to your storage
-    // not much
-    const imageUrls = files.map(file => URL.createObjectURL(file))
-    setFormData((prev: any) => ({
-      ...prev,
-      images: [...prev.images, ...imageUrls]
-    }));
-  };
+  // const handleImageUpload = async (e: { target: { files: FileList}}) => {
+  //   const files = Array.from(e.target.files);
+  //   console.log("butes", files, formData)
+  //   // In real implementation, you'd upload these to your storage
+  //   // not much
+  //   const imageUrls = files.map(file => URL.createObjectURL(file))
+  //   setFormData((prev: any) => ({
+  //     ...prev,
+  //     images: [...prev.images, ...imageUrls]
+  //   }));
+  // };
 
-  const removeImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }));
-  };
+  // const removeImage = (index: number) => {
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     images: prev.images.filter((_, i) => i !== index)
+  //   }));
+  // };
 
   const handleSubmit = async () => {
     if (!validateStep(2)) return;
@@ -229,7 +229,7 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories }: any
         title: opt.title,
         values: opt.values.filter(v => v.trim())
       })),
-      images: formData.images,
+      // images: formData.images,
       variants: formData.variants.map(variant => ({
         title: variant.title || formData.title,
         prices: [{
@@ -321,7 +321,8 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories }: any
           Product Images
         </label>
         <div className="grid grid-cols-3 gap-4 mb-4">
-          {formData.images.map((image, index) => (
+          {/* {formData.images.map((image, index) => ( */}
+          {[].map((image, index) => (
             <div key={index} className="relative aspect-square">
               <img
                 src={image}
@@ -329,7 +330,7 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories }: any
                 className="w-full h-full object-cover rounded-lg"
               />
               <button
-                onClick={() => removeImage(index)}
+                // onClick={() => removeImage(index)}
                 className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
               >
                 <X className="w-4 h-4" />
@@ -345,7 +346,10 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories }: any
             </p>
             <p className="text-xs text-stone-400">PNG, JPG up to 10MB</p>
           </div>
-          <input type="file" className="hidden" multiple accept="image/*" onChange={handleImageUpload} />
+          <input 
+            type="file" className="hidden" multiple accept="image/*" 
+            // onChange={handleImageUpload} 
+          />
         </label>
       </div>
     </div>

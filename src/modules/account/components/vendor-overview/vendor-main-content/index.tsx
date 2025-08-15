@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import RecentEvents from '../vendor-recent-events';
 
-import { getTheEventTime, getThePreviousEventTime } from "../../../../../lib/util/vendor-event-time";
+import deleteProduct from '../vendor-server-exec/deleteProduct';
 
 import { OrderItem, ProductItem, ReviewItem, VendorAdmin, Vendor, Orders } from 'types/global';
 import { HttpTypes } from '@medusajs/types';
@@ -183,6 +183,7 @@ const MainContent = ({ vendorOrders, vendorProducts }: { vendorOrders: Orders[] 
             items={recentProducts}
             onViewAll={() => console.log('View all products')}
             maxItems={3}
+            onProductDelete={deleteProduct}
           />
 
           {/* <RecentEvents

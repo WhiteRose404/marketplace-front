@@ -44,6 +44,21 @@ export type Vendor = prebuilt & {
     name:   string
     vistors: number
 }
+export type VendorProduct = {
+  title: string,
+  description: string,
+  category: string,
+  images: string[],
+  options: { title: string, values: string[] }[],
+  variants: {
+    title: string,
+    prices: { currency_code: string, amount: string }[],
+    manage_inventory: boolean,
+    options: any,
+    sku: string,
+    inventory: string
+  }[]
+}
 
 export type Orders = any
 export type CustomeProducts = any

@@ -1,4 +1,4 @@
-export const getTheEventTime = (events: any[] | null, period: "7d" | "1m" | "3m") => (
+export const getTheEventTime = (events: any[] | null, period: "7d" | "1m" | "3m"): any[] | undefined => (
     events?.filter((event) => {
         const orderDoneOn = new Date(event.created_at);
         const currentDate = new Date();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { 
   Filter, 
@@ -11,7 +11,10 @@ import {
   Star,
   Eye,
   TrendingUp,
-  User
+  User,
+  Edit,
+  Trash2,
+  EyeOff
 } from 'lucide-react';
 
 // Base interface that all item types must implement
@@ -59,6 +62,9 @@ interface RecentEventsProps {
   onViewAll?: () => void;
   showFilter?: boolean;
   maxItems?: number;
+  onProductModify?: (productId: string) => void;
+  onProductDelete?: Promise<(productId: string[]) => void>;
+  onProductHide?: (productId: string) => void;
 }
 
 const RecentEvents: React.FC<RecentEventsProps> = ({ 
@@ -66,9 +72,49 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
   items, 
   onViewAll,
   showFilter = true,
-  maxItems = 10
+  maxItems = 10,
+  onProductModify,
+  onProductDelete,
+  onProductHide
 }) => {
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
   const displayItems = items?.slice(0, maxItems);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleDropdownToggle = (itemId: string) => {
+    setOpenDropdown(openDropdown === itemId ? null : itemId);
+  };
+
+  const handleProductAction = (action: 'modify' | 'delete' | 'hide', productId: string) => {
+    setOpenDropdown(null);
+    
+    switch (action) {
+      case 'modify':
+        onProductModify?.(productId);
+        break;
+      case 'delete':
+        onProductDelete?.([productId]);
+        break;
+      case 'hide':
+        onProductHide?.(productId);
+        break;
+    }
+  };
 
   const getStatusIcon = (status: string) => {
     const iconMap: { [key: string]: JSX.Element } = {
@@ -231,6 +277,55 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
     }
   };
 
+  const renderActionButton = (item: EventItem) => {
+    if (item.type === 'product') {
+      return (
+        <div className="relative" ref={dropdownRef}>
+          <button 
+            onClick={() => handleDropdownToggle(item.id)}
+            className="p-2 text-stone-400 hover:text-stone-600 rounded-lg transition-colors"
+          >
+            <MoreHorizontal className="w-4 h-4" />
+          </button>
+          
+          {openDropdown === item.id && (
+            <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-stone-200 z-50">
+              <div className="py-1">
+                <button
+                  onClick={() => handleProductAction('modify', item.id)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 w-full text-left transition-colors"
+                >
+                  <Edit className="w-4 h-4" />
+                  Modify
+                </button>
+                <button
+                  onClick={() => handleProductAction('delete', item.id)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete
+                </button>
+                <button
+                  onClick={() => handleProductAction('hide', item.id)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 w-full text-left transition-colors"
+                >
+                  <EyeOff className="w-4 h-4" />
+                  Hide
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <button className="p-2 text-stone-400 hover:text-stone-600 rounded-lg transition-colors">
+        <MoreHorizontal className="w-4 h-4" />
+      </button>
+    );
+  };
+
   if (!displayItems || displayItems.length === 0) {
     return (
       <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm">
@@ -273,9 +368,7 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
         {displayItems.map((item) => (
           <div key={item.id} className="flex items-center gap-4 p-4 hover:bg-stone-50 rounded-xl transition-colors">
             {renderItemContent(item)}
-            <button className="p-2 text-stone-400 hover:text-stone-600 rounded-lg transition-colors">
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
+            {renderActionButton(item)}
           </div>
         ))}
       </div>

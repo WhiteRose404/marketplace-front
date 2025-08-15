@@ -18,7 +18,7 @@ const Metrics = ({ analytics }: any) => {
 
     useEffect(()=>{
         setIsVisible(true);
-    })
+    }, [])
     return (
         <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <MetricCard

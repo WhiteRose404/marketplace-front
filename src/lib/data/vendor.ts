@@ -12,7 +12,7 @@ import {
   removeCartId,
   setAuthToken,
 } from "./cookies"
-import { Vendor, VendorAdmin, Orders } from "types/global"
+import { Vendor, VendorAdmin, Orders, VendorProduct } from "types/global"
 import { StoreProduct } from "@medusajs/types"
 
 export const retrieveVendorAdmin =
@@ -125,6 +125,35 @@ export const retrieveProducts =
       })
       .then(({ products }) => products)
       .catch(() => null)
+  }
+
+export const registerProduct =
+  async (productData: VendorProduct): Promise<StoreProduct[] | null> => {
+    const authHeaders = await getAuthHeaders()
+
+    if (!authHeaders) return null
+
+    const headers = {
+      ...authHeaders,
+    }
+
+    return await sdk.client
+      .fetch<{ products: StoreProduct[] }>(`/vendors/products`, {
+        method: "POST",
+        body: productData,
+        query: {
+          // fields: "*items",
+        },
+        headers,
+        // next,
+        // cache: "force-cache",
+      })
+      .then(async ({ products }) => {
+        const vendorCacheTag = await getCacheTag("vendor_products")
+        revalidateTag(vendorCacheTag)
+        return products
+      })
+      .catch(() => [])
   }
 
 
@@ -283,6 +312,34 @@ export async function transferCart() {
 //       return { success: false, error: err.toString() }
 //     })
 // }
+
+
+export const deleteVendorProduct = async (
+  productId: string[]
+): Promise<{ success: boolean, error?: string | null}> => {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  const result = await sdk.client.fetch<{ message: string, result?: any, error?: string }>(`/vendors/products?product_ids=${productId.toString()}`, {
+    method: "DELETE",
+    // query: {
+    //   fields: "*items",
+    // },
+    headers,
+    // cache: "force-cache",
+  })
+    .then(async () => {
+      const vendorCacheTag = await getCacheTag("vendor_products")
+      revalidateTag(vendorCacheTag)
+      return { success: true, error: null }
+    })
+    .catch((err) => {
+      return { success: false, error: err.toString() }
+    })
+
+    return result;
+}
 
 // export const deleteCustomerAddress = async (
 //   addressId: string
