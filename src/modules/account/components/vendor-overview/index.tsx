@@ -94,7 +94,7 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories, ve
         />
 
         {/* Main Content Grid */}
-        <MainContent vendorOrders={vendorOrders} vendorProducts={vendorProducts} />
+        <MainContent handleSubmit={handleProductSubmit} vendorOrders={vendorOrders} vendorProducts={vendorProducts} namedCategories={namedCategories} />
 
         {/* Top Products */}
         <TopProducts />

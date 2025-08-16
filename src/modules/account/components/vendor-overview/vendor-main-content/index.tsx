@@ -11,6 +11,8 @@ import {
   Plus,
   MessageSquare,
 } from 'lucide-react';
+
+import ProductCreationForm from "@modules/account/components/vendor-add-product";
 import RecentEvents from '../vendor-recent-events';
 
 import deleteProduct from '../vendor-server-exec/deleteProduct';
@@ -35,8 +37,10 @@ type VendorProduct = {
   }[]
 }
 
-const MainContent = ({ vendorOrders, vendorProducts }: { vendorOrders: Orders[] | null, vendorProducts: HttpTypes.StoreProduct[] | null }) => {
+const MainContent = ({ vendorOrders, vendorProducts, handleSubmit, namedCategories }: { vendorOrders: Orders[] | null, vendorProducts: HttpTypes.StoreProduct[] | null, handleSubmit: any, namedCategories: string[] }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isProductCreatingOpen, setIsProductCreatingOpen] = useState(false);
+
 
   const transformedOrders: OrderItem[] | undefined = vendorOrders?.map(order => ({
     id: order.id,
@@ -57,7 +61,7 @@ const MainContent = ({ vendorOrders, vendorProducts }: { vendorOrders: Orders[] 
     name: product.title,
     category: product.categories,
     price: getProductPrice({ product }) !== null ? getProductPrice({ product })?.cheapestPrice?.calculated_price : 0,
-    stock: product.variants ? product.variants.reduce((acc, variant) => acc + (variant.inventory_quantity ? variant.inventory_quantity: 0), 0) : 0,
+    stock: product.variants ? product.variants.reduce((acc, variant) => acc + (variant.inventory_quantity ? variant.inventory_quantity : 0), 0) : 0,
     status: product.status === 'published' ? 'active' : 'draft',
     date: new Date(product.created_at ? product.created_at : "").toISOString().split('T')[0],
     image: product.thumbnail ? product.thumbnail : (product.images && product.images.length > 0) ? product.images[0] : `https://ui-avatars.com/api/?name=${product.title}`
@@ -168,25 +172,32 @@ const MainContent = ({ vendorOrders, vendorProducts }: { vendorOrders: Orders[] 
   useEffect(() => {
     setIsVisible(true);
   }, []);
-    return (
-        <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+  return (
+    <>
+      <ProductCreationForm
+        isOpen={isProductCreatingOpen}
+        onClose={() => setIsProductCreatingOpen(false)}
+        onSubmit={handleSubmit}
+        namedCategories={namedCategories}
+      />
+      <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
 
-          {/* Recent Orders */}
-          {/* <RecentEvents
+        {/* Recent Orders */}
+        {/* <RecentEvents
             title="Recent Orders"
             items={transformedOrders}
             onViewAll={() => console.log('View all orders')}
             maxItems={5}
           /> */}
-          <RecentEvents
-            title="Recent Products"
-            items={recentProducts}
-            onViewAll={() => console.log('View all products')}
-            maxItems={3}
-            onProductDelete={deleteProduct}
-          />
+        <RecentEvents
+          title="Recent Products"
+          items={recentProducts}
+          onViewAll={() => console.log('View all products')}
+          maxItems={3}
+          onProductDelete={deleteProduct}
+        />
 
-          {/* <RecentEvents
+        {/* <RecentEvents
             title="Recent Reviews"
             items={recentReviews}
             onViewAll={() => console.log('View all reviews')}
@@ -194,68 +205,68 @@ const MainContent = ({ vendorOrders, vendorProducts }: { vendorOrders: Orders[] 
             maxItems={4}
           /> */}
 
-          {/* Notifications & Quick Stats */}
-          <div className="space-y-6">
+        {/* Notifications & Quick Stats */}
+        <div className="space-y-6">
 
-            {/* Notifications */}
-            <div className="bg-white rounded-2xl shadow-sm">
-              <div className="p-6 border-b border-stone-100">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-medium text-stone-900">Notifications</h2>
-                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                </div>
-              </div>
-              <div className="p-6 space-y-4">
-                {notifications.slice(0, 3).map((notification, index) => (
-                  <div key={index} className={`flex items-start gap-3 p-3 rounded-xl transition-colors ${notification.unread ? 'bg-amber-50 border border-amber-100' : 'hover:bg-stone-50'
-                    }`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${notification.type === 'order' ? 'bg-blue-100 text-blue-600' :
-                      notification.type === 'review' ? 'bg-green-100 text-green-600' :
-                        'bg-amber-100 text-amber-600'
-                      }`}>
-                      {notification.type === 'order' && <ShoppingCart className="w-4 h-4" />}
-                      {notification.type === 'review' && <Star className="w-4 h-4" />}
-                      {notification.type === 'stock' && <Package className="w-4 h-4" />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-stone-900 text-sm">{notification.title}</p>
-                      <p className="text-stone-600 text-sm truncate">{notification.message}</p>
-                      <p className="text-stone-400 text-xs mt-1">{notification.time}</p>
-                    </div>
-                  </div>
-                ))}
-                <button className="w-full py-2 text-sm text-amber-600 hover:text-amber-700 font-medium">
-                  View all notifications
-                </button>
+          {/* Notifications */}
+          <div className="bg-white rounded-2xl shadow-sm">
+            <div className="p-6 border-b border-stone-100">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-medium text-stone-900">Notifications</h2>
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
               </div>
             </div>
+            <div className="p-6 space-y-4">
+              {notifications.slice(0, 3).map((notification, index) => (
+                <div key={index} className={`flex items-start gap-3 p-3 rounded-xl transition-colors ${notification.unread ? 'bg-amber-50 border border-amber-100' : 'hover:bg-stone-50'
+                  }`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${notification.type === 'order' ? 'bg-blue-100 text-blue-600' :
+                    notification.type === 'review' ? 'bg-green-100 text-green-600' :
+                      'bg-amber-100 text-amber-600'
+                    }`}>
+                    {notification.type === 'order' && <ShoppingCart className="w-4 h-4" />}
+                    {notification.type === 'review' && <Star className="w-4 h-4" />}
+                    {notification.type === 'stock' && <Package className="w-4 h-4" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-stone-900 text-sm">{notification.title}</p>
+                    <p className="text-stone-600 text-sm truncate">{notification.message}</p>
+                    <p className="text-stone-400 text-xs mt-1">{notification.time}</p>
+                  </div>
+                </div>
+              ))}
+              <button className="w-full py-2 text-sm text-amber-600 hover:text-amber-700 font-medium">
+                View all notifications
+              </button>
+            </div>
+          </div>
 
-            {/* Quick Actions */}
-            <div className="bg-white rounded-2xl shadow-sm p-6">
-              <h3 className="text-lg font-medium text-stone-900 mb-4">Quick Actions</h3>
-              <div className="grid grid-cols-2 gap-3">
-                <button className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
-                  <Plus className="w-6 h-6 text-stone-600 mx-auto mb-2" />
-                  <span className="text-sm font-medium text-stone-900">Add Product</span>
-                </button>
-                <button className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
-                  <Eye className="w-6 h-6 text-stone-600 mx-auto mb-2" />
-                  <span className="text-sm font-medium text-stone-900">View Store</span>
-                </button>
-                <button className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
-                  <MessageSquare className="w-6 h-6 text-stone-600 mx-auto mb-2" />
-                  <span className="text-sm font-medium text-stone-900">Messages</span>
-                </button>
-                <button className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
-                  <Settings className="w-6 h-6 text-stone-600 mx-auto mb-2" />
-                  <span className="text-sm font-medium text-stone-900">Settings</span>
-                </button>
-              </div>
+          {/* Quick Actions */}
+          <div className="bg-white rounded-2xl shadow-sm p-6">
+            <h3 className="text-lg font-medium text-stone-900 mb-4">Quick Actions</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <button onClick={() => setIsProductCreatingOpen(true)} className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
+                <Plus className="w-6 h-6 text-stone-600 mx-auto mb-2" />
+                <span className="text-sm font-medium text-stone-900">Add Product</span>
+              </button>
+              <button className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
+                <Eye className="w-6 h-6 text-stone-600 mx-auto mb-2" />
+                <span className="text-sm font-medium text-stone-900">View Store</span>
+              </button>
+              <button className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
+                <MessageSquare className="w-6 h-6 text-stone-600 mx-auto mb-2" />
+                <span className="text-sm font-medium text-stone-900">Messages</span>
+              </button>
+              <button className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
+                <Settings className="w-6 h-6 text-stone-600 mx-auto mb-2" />
+                <span className="text-sm font-medium text-stone-900">Settings</span>
+              </button>
             </div>
           </div>
         </div>
-
-    )
+      </div>
+    </>
+  )
 }
 
 
