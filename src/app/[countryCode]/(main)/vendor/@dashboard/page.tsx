@@ -5,8 +5,16 @@ import { retrieveOrders, retrieveVendor, retrieveVendorAdmin, retrieveProducts }
 import VendorOverview from "@modules/account/components/vendor-overview";
 import NotFound from "app/not-found";
 
+import { Metadata } from "next"
+
 import { Orders, VendorAdmin } from 'types/global';
 import { Vendor } from 'types/global';
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Dashboard to your When Vendor account.",
+}
+
 
 const VendorDashboard = async () => {
   const vendor: Vendor | null = await retrieveVendor().catch(() => null)
