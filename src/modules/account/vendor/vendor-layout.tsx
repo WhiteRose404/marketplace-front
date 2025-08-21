@@ -1,9 +1,10 @@
 import React from "react"
 
 import { HttpTypes } from "@medusajs/types"
+import { VendorAdmin } from "types/global"
 
 interface AccountLayoutProps {
-  customer: HttpTypes.StoreCustomer | null
+  customer: HttpTypes.StoreCustomer | VendorAdmin | null
   children: React.ReactNode
 }
 

@@ -5,14 +5,47 @@ import { retrieveOrders, retrieveVendor, retrieveVendorAdmin, retrieveProducts }
 import VendorOverview from "@modules/account/components/vendor-overview";
 import NotFound from "app/not-found";
 
-import { Metadata } from "next"
+import { Metadata, ResolvingMetadata } from "next"
 
 import { Orders, VendorAdmin } from 'types/global';
 import { Vendor } from 'types/global';
 
-export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Dashboard to your When Vendor account.",
+type Props = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+ 
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // read route params
+  const vendor: Vendor | null = await retrieveVendor().catch(() => null);
+  if (!vendor) {
+    return {
+      title: 'Vendor Not Found',
+      openGraph: {
+        title: 'Vendor Not Found',
+        description: 'The requested vendor could not be found.',
+      },
+    }
+  }
+
+  return {
+    title: `${vendor.name} Dashboard`,
+    description: `Dashboard for vendor ${vendor.name}`,
+    openGraph: {
+      title: `${vendor.name} Dashboard`,
+      description: `Dashboard for vendor ${vendor.name}`,
+      url: `/vendor/${vendor.id}`,
+      images: [
+        {
+          url: vendor.logo || '/default-logo.png',
+          alt: `${vendor.name} Logo`,
+        },
+      ],
+    },
+  }
 }
 
 
