@@ -11,7 +11,7 @@ import { Orders, VendorAdmin } from 'types/global';
 import { Vendor } from 'types/global';
 
 type Props = {
-  params: Promise<{ id: string }>
+  params: Promise<{ countryCode: string, id: string }>
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
  
@@ -49,7 +49,9 @@ export async function generateMetadata(
 }
 
 
-const VendorDashboard = async () => {
+const VendorDashboard = async (props: Props) => {
+  const params = await props.params;
+  const { countryCode } = params;
   const vendor: Vendor | null = await retrieveVendor().catch(() => null)
   const vendorAdmin: VendorAdmin | null = await retrieveVendorAdmin().catch(() => null)
   const vendorOrders: Orders[] | null = await retrieveOrders().catch(() => null);
@@ -61,7 +63,7 @@ const VendorDashboard = async () => {
     return NotFound();
   }
   return (
-    <VendorOverview vendor={vendor} vendorAdmin={vendorAdmin} namedCategories={collection.map(collection => collection.name )} vendorOrders={vendorOrders} vendorProducts={vendorProducts}/>
+    <VendorOverview countryCode={countryCode} vendor={vendor} vendorAdmin={vendorAdmin} namedCategories={collection.map(collection => collection.name )} vendorOrders={vendorOrders} vendorProducts={vendorProducts}/>
   );
 };
 

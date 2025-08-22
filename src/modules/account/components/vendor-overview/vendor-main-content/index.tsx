@@ -9,7 +9,7 @@ import {
   Star,
   Settings,
   Plus,
-  MessageSquare,
+  LogOut,
 } from 'lucide-react';
 
 import ProductCreationForm from "@modules/account/components/vendor-add-product";
@@ -20,6 +20,7 @@ import deleteProduct from '../vendor-server-exec/deleteProduct';
 import { OrderItem, ProductItem, ReviewItem, VendorAdmin, Vendor, Orders } from 'types/global';
 import { HttpTypes } from '@medusajs/types';
 import { getProductPrice } from '@lib/util/get-product-price';
+import { signout } from '@lib/data/vendor';
 
 type VendorProduct = {
   title: string,
@@ -37,7 +38,7 @@ type VendorProduct = {
   }[]
 }
 
-const MainContent = ({ vendorOrders, vendorProducts, handleSubmit, namedCategories }: { vendorOrders: Orders[] | null, vendorProducts: HttpTypes.StoreProduct[] | null, handleSubmit: any, namedCategories: string[] }) => {
+const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, namedCategories }: { countryCode: string, vendorOrders: Orders[] | null, vendorProducts: HttpTypes.StoreProduct[] | null, handleSubmit: any, namedCategories: string[] }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isProductCreatingOpen, setIsProductCreatingOpen] = useState(false);
 
@@ -254,12 +255,12 @@ const MainContent = ({ vendorOrders, vendorProducts, handleSubmit, namedCategori
                 <span className="text-sm font-medium text-stone-900">View Store</span>
               </button>
               <button className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
-                <MessageSquare className="w-6 h-6 text-stone-600 mx-auto mb-2" />
-                <span className="text-sm font-medium text-stone-900">Messages</span>
-              </button>
-              <button className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
                 <Settings className="w-6 h-6 text-stone-600 mx-auto mb-2" />
                 <span className="text-sm font-medium text-stone-900">Settings</span>
+              </button>
+              <button onClick={() => signout(countryCode)} className="p-4 bg-stone-50 hover:bg-stone-100 rounded-xl transition-colors text-center">
+                <LogOut className="w-6 h-6 text-stone-600 mx-auto mb-2" />
+                <span className="text-sm font-medium text-stone-900">Log out</span>
               </button>
             </div>
           </div>

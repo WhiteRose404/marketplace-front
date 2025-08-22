@@ -16,7 +16,7 @@ import handleProductSubmit from './vendor-server-exec/submitProduct'
 
 
 
-const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories, vendorProducts }: { vendor: Vendor, vendorAdmin: VendorAdmin, vendorOrders: Orders[] | null, namedCategories: string[], vendorProducts: HttpTypes.StoreProduct[] | null }) => {
+const VendorOverview = ({ countryCode, vendor, vendorAdmin, vendorOrders, namedCategories, vendorProducts }: { countryCode: string, vendor: Vendor, vendorAdmin: VendorAdmin, vendorOrders: Orders[] | null, namedCategories: string[], vendorProducts: HttpTypes.StoreProduct[] | null }) => {
   const selectedPeriod = '7d';
 
   // get the order data
@@ -94,7 +94,7 @@ const VendorOverview = ({ vendor, vendorAdmin, vendorOrders, namedCategories, ve
         />
 
         {/* Main Content Grid */}
-        <MainContent handleSubmit={handleProductSubmit} vendorOrders={vendorOrders} vendorProducts={vendorProducts} namedCategories={namedCategories} />
+        <MainContent countryCode={countryCode} handleSubmit={handleProductSubmit} vendorOrders={vendorOrders} vendorProducts={vendorProducts} namedCategories={namedCategories} />
 
         {/* Top Products */}
         <TopProducts />

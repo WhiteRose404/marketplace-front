@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useActionState } from 'react';
+import React, { useState, useEffect, useActionState, use } from 'react';
 import { 
   Eye, 
   EyeOff, 
@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { login } from '@lib/data/vendor';
+import { SubmitButton } from "@modules/checkout/components/submit-button"
+
 
 type FormData = {
   email?: string;
@@ -42,7 +44,14 @@ const LoginComponent = ({ onSwitchToRegister }: { onSwitchToRegister: any }) => 
 
   const [state, formAction] = useActionState(login, null);
 
-  
+  useEffect(() => {
+    if (state?.success) {
+      // Redirect or show success message
+    } else if (state?.error) {
+      // Show error message
+      setErrors({ ...errors, email: state.error, password: state.error });
+    }
+  }, [state]);
   const testimonials = [
     {
       text: "When.ma helped me reach customers across MENA I never could before",
@@ -138,7 +147,6 @@ const LoginComponent = ({ onSwitchToRegister }: { onSwitchToRegister: any }) => 
           <form className="space-y-6" 
             action={formAction}
           >
-
             {/* Email */}
             <div>
               <div className="relative">
@@ -156,7 +164,6 @@ const LoginComponent = ({ onSwitchToRegister }: { onSwitchToRegister: any }) => 
                   }`}
                 />
               </div>
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
 
             {/* Password */}
@@ -197,14 +204,9 @@ const LoginComponent = ({ onSwitchToRegister }: { onSwitchToRegister: any }) => 
             </div>
 
             {/* Submit Button */}
-            <button
-              formAction={formAction}
-              data-testid="sign-in-button"
-              className="w-full bg-stone-900 text-white py-3 rounded-xl hover:bg-stone-800 transition-all font-medium flex items-center justify-center gap-2 group"
-            >
-              Sign In
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
+            <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
+                Sign in
+            </SubmitButton>
 
             {/* Divider */}
             <div className="relative">

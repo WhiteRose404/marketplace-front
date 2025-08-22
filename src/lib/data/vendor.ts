@@ -234,13 +234,19 @@ export async function login(_currentState: unknown, formData: FormData) {
         revalidateTag(vendorCacheTag)
       })
   } catch (error: any) {
-    return error.toString()
+    return {
+      success: false,
+      error: error.toString().split("Error: ")[1],
+    }
   }
 
   try {
     await transferCart()
   } catch (error: any) {
-    return error.toString()
+    return {
+      success: false,
+      error: error.toString().split("Error: ")[1],
+    }
   }
 }
 
