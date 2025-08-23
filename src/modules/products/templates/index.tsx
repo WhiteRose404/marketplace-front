@@ -1,6 +1,6 @@
 import React, { Suspense } from "react"
 
-import ImageGallery from "@modules/products/components/image-gallery"
+import ImageGallery from "@modules/products/components/image-gallery/index-old"
 import ProductActions from "@modules/products/components/product-actions"
 import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
 import ProductTabs from "@modules/products/components/product-tabs"
