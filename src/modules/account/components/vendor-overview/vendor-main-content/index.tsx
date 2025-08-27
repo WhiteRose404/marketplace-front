@@ -194,7 +194,7 @@ const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, 
           title="Recent Products"
           items={recentProducts}
           onViewAll={() => console.log('View all products')}
-          maxItems={3}
+          maxItems={5}
           onProductDelete={deleteProduct}
         />
 

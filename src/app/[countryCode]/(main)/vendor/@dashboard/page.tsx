@@ -1,6 +1,6 @@
 "use server";
 
-import { listCategories } from "@lib/data/categories";
+import { getAllLocations, listCategories } from "@lib/data/categories";
 import { retrieveOrders, retrieveVendor, retrieveVendorAdmin, retrieveProducts } from "@lib/data/vendor";
 import VendorOverview from "@modules/account/components/vendor-overview";
 import NotFound from "app/not-found";
@@ -57,7 +57,8 @@ const VendorDashboard = async (props: Props) => {
   const vendorOrders: Orders[] | null = await retrieveOrders().catch(() => null);
   const vendorProducts = await retrieveProducts().catch(() => null);
   const collection = await listCategories();
-  console.log("vendor", vendor);
+  const locations = await getAllLocations(['']); // fetch all locations
+  console.log("vendor", vendorProducts);
 
   if(!vendor || !vendorAdmin){
     return NotFound();

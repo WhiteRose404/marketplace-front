@@ -47,3 +47,31 @@ export const getCategoryByHandle = async (categoryHandle: string[]) => {
     )
     .then(({ product_categories }) => product_categories[0])
 }
+
+export const getAllLocations = async (categoryHandle: string[]) => {
+  const handle = `${categoryHandle.join("/")}`
+
+  const next = {
+    ...(await getCacheOptions("locations")),
+  }
+
+  return sdk.client
+    .fetch<HttpTypes.StoreProductCategoryListResponse>(
+      `/admin/stock-locations`,
+      {
+        // query: {
+        //   fields: "*category_children, *products",
+        //   handle,
+        // },
+        next,
+        // cache: "force-cache",
+      }
+    )
+    .then((locations) => {
+      console.log("DEBUG: locations", locations)
+      return locations
+    }).catch(() => {
+      console.log("DEBUG: error fetching locations") 
+      return null
+    })
+}

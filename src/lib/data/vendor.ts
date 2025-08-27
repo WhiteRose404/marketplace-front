@@ -120,7 +120,7 @@ export const retrieveProducts =
           // fields: "*items",
         },
         headers,
-        next,
+        // next,
         // cache: "force-cache",
       })
       .then(({ products }) => products)

@@ -89,7 +89,7 @@ export default async function ProductPage(props: Props) {
 
   const pricedProduct = await listProducts({
     countryCode: params.countryCode,
-    queryParams: { handle: params.handle },
+    queryParams: { handle: params.handle, },
   }).then(({ response }) => response.products[0])
 
   const vendorManaged = pricedProduct?.metadata?.vendor_managed === "true";
