@@ -15,6 +15,36 @@ import {
 import { Vendor, VendorAdmin, Orders, VendorProduct } from "types/global"
 import { StoreProduct } from "@medusajs/types"
 
+
+
+
+type locationFetched = {
+  "locations": [
+    {
+      "id": string,
+      "name": string,
+      "address": {
+        "address_1": string,
+        "address_2": string | null,
+        "city": string,
+        "country_code": string,
+        "postal_code": string | null,
+        "phone": string | null,
+        "province": string | null
+      },
+      "created_at": string,
+      "updated_at": string
+    }
+  ],
+  "count": number
+}
+
+type errorFetched = {
+  error: string,
+  message: string 
+}
+
+
 export const retrieveVendorAdmin =
   async (): Promise<VendorAdmin | null> => {
     const authHeaders = await getAuthHeaders()
@@ -410,3 +440,39 @@ export const deleteVendorProduct = async (
 //       return { success: false, error: err.toString() }
 //     })
 // }
+
+export const getAllLocations = async () => {
+
+  const authHeaders = await getAuthHeaders()
+
+  if (!authHeaders) return null
+
+  const headers = {
+    ...authHeaders,
+  }
+
+  const next = {
+    ...(await getCacheOptions("locations")),
+  }
+
+  return sdk.client
+    .fetch<locationFetched & errorFetched>(
+      `/vendors/vendor-locations`,
+      {
+        // query: {
+        //   fields: "*category_children, *products",
+        //   handle,
+        // },
+        next,
+        headers,
+        cache: "force-cache",
+      }
+    )
+    .then((locations) => {
+      console.log("DEBUG: locations", locations)
+      return locations
+    }).catch((err) => {
+      console.log("DEBUG: error fetching locations", JSON.stringify(err)) 
+      return null
+    })
+}
