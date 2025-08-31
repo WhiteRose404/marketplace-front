@@ -171,7 +171,7 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
       <Image
         width={48}
         height={48}
-        src={item.image || `https://ui-avatars.com/api/?name=${item.id}&background=f5f5f4&color=78716c`}
+        src={item.image?.trimEnd() || `https://ui-avatars.com/api/?name=${item.id}&background=f5f5f4&color=78716c`}
         alt={getItemAltText(item)}
         className="w-12 h-12 rounded-lg object-cover"
       />
