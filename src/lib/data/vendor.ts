@@ -168,7 +168,7 @@ export const registerProduct =
     }
 
     return await sdk.client
-      .fetch<{ products: StoreProduct[] }>(`/vendors/products`, {
+      .fetch<{ products: StoreProduct[], inventory_levels: any }>(`/vendors/products`, {
         method: "POST",
         body: productData,
         query: {
@@ -178,7 +178,8 @@ export const registerProduct =
         // next,
         // cache: "force-cache",
       })
-      .then(async ({ products }) => {
+      .then(async ({ products, inventory_levels }) => {
+        console.log("DEBUG inventory_levels", inventory_levels);
         const vendorCacheTag = await getCacheTag("vendor_products")
         revalidateTag(vendorCacheTag)
         return products
