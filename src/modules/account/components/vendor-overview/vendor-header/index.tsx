@@ -9,7 +9,7 @@ import ProductCreationForm from "@modules/account/components/vendor-add-product"
 
 import { VendorAdmin, Vendor } from 'types/global';
 
-const VendorHeader = ({ vendorData, selectedPeriod, handleSubmit, namedCategories }: { vendorData: { mock: any, vendor: Vendor, vendorAdmin: VendorAdmin }, selectedPeriod: "7d" | "30d" | "3m" | "1y", namedCategories: string[], handleSubmit: any }) => {
+const VendorHeader = ({ vendorData, selectedPeriod, handleSubmit, namedCategories, vendorLocations }: { vendorLocations: any[], vendorData: { mock: any, vendor: Vendor, vendorAdmin: VendorAdmin }, selectedPeriod: "7d" | "30d" | "3m" | "1y", namedCategories: string[], handleSubmit: any }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [isProductCreatingOpen, setIsProductCreatingOpen] = useState(false);
 
@@ -23,6 +23,7 @@ const VendorHeader = ({ vendorData, selectedPeriod, handleSubmit, namedCategorie
                 onClose={() => setIsProductCreatingOpen(false)}
                 onSubmit={handleSubmit}
                 namedCategories={namedCategories}
+                vendorLocations={vendorLocations}
             />
             <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">

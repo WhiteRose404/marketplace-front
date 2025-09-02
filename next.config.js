@@ -26,6 +26,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "when-marketplace.s3.gra.io.cloud.ovh.net"
+      },
+      {
+        protocol: "https",
         hostname: "medusa-public-images.s3.eu-west-1.amazonaws.com",
       },
       {

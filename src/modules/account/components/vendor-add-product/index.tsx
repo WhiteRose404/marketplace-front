@@ -17,11 +17,14 @@ import {
 
 type ErrorsProduct = any;
 
-const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories, vendorLocations = [] }: any) => {
+const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories, vendorLocations }: any) => {
   const [isVisible, setIsVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+
+  // location id
+  const [locationId, setLocationId] = useState(vendorLocations.length > 0 ? vendorLocations[0].id : '');
   // Form data state
   const [formData, setFormData] = useState({
     title: '',
@@ -261,7 +264,10 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories, vendo
     };
     
     try {
-      await onSubmit(submitData);
+      await onSubmit({
+        product: submitData,
+        location_id: locationId
+      });
       // Reset form
       // setFormData({
       //   title: '',
@@ -616,9 +622,9 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories, vendo
                   </div>
                 </div>
 
-                {/* {variant.manage_inventory && (
+                {variant.manage_inventory && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
-                    <div>
+                    {/* <div>
                       <label className="block text-sm font-medium text-stone-700 mb-1">
                         <Package className="w-4 h-4 inline mr-1" />
                         Initial Stock Quantity *
@@ -636,7 +642,7 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories, vendo
                       {errors[`variant_${index}_inventory`] && (
                         <p className="mt-1 text-xs text-red-600">{errors[`variant_${index}_inventory`]}</p>
                       )}
-                    </div>
+                    </div> */}
                     
                     {vendorLocations.length > 0 && (
                       <div>
@@ -645,7 +651,7 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories, vendo
                           Inventory Location *
                         </label>
                         <select
-                          value={variant.location_id}
+                          value={locationId}
                           onChange={(e) => updateVariant(index, 'location_id', e.target.value)}
                           className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 ${
                             errors[`variant_${index}_location`] ? 'border-red-300' : 'border-stone-200'
@@ -664,7 +670,7 @@ const ProductCreationForm = ({ isOpen, onClose, onSubmit, namedCategories, vendo
                       </div>
                     )} 
                   </div>
-                )} */}
+                )}
                 
                 <div className="p-3 bg-white rounded-lg border border-stone-200">
                   <p className="text-sm text-stone-600 mb-2">Product Options:</p>

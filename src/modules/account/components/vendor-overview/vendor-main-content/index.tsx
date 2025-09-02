@@ -38,7 +38,7 @@ type VendorProduct = {
   }[]
 }
 
-const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, namedCategories }: { countryCode: string, vendorOrders: Orders[] | null, vendorProducts: HttpTypes.StoreProduct[] | null, handleSubmit: any, namedCategories: string[] }) => {
+const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, namedCategories, vendorLocations }: { countryCode: string, vendorOrders: Orders[] | null, vendorProducts: HttpTypes.StoreProduct[] | null, handleSubmit: any, namedCategories: string[], vendorLocations: any[] }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isProductCreatingOpen, setIsProductCreatingOpen] = useState(false);
 
@@ -55,6 +55,7 @@ const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, 
   }));
 
 
+
   // Example product data
   const recentProducts: ProductItem[] | undefined = vendorProducts?.map(product => ({
     id: product.id,
@@ -67,6 +68,8 @@ const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, 
     date: new Date(product.created_at ? product.created_at : "").toISOString().split('T')[0],
     image: product.thumbnail ? product.thumbnail : (product.images && product.images.length > 0) ? product.images[0] : `https://ui-avatars.com/api/?name=${product.title}`
   }))
+
+  console.log("Recent Products: ", recentProducts);
 
   // Example review data
   const recentReviews: ReviewItem[] | undefined = [
@@ -173,6 +176,7 @@ const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, 
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
   return (
     <>
       <ProductCreationForm
@@ -180,6 +184,7 @@ const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, 
         onClose={() => setIsProductCreatingOpen(false)}
         onSubmit={handleSubmit}
         namedCategories={namedCategories}
+        vendorLocations={vendorLocations}
       />
       <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
 

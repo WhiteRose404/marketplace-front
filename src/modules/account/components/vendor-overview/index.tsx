@@ -16,9 +16,8 @@ import handleProductSubmit from './vendor-server-exec/submitProduct'
 
 
 
-const VendorOverview = ({ countryCode, vendor, vendorAdmin, vendorOrders, namedCategories, vendorProducts }: { countryCode: string, vendor: Vendor, vendorAdmin: VendorAdmin, vendorOrders: Orders[] | null, namedCategories: string[], vendorProducts: HttpTypes.StoreProduct[] | null }) => {
+const VendorOverview = ({ countryCode, vendor, vendorAdmin, vendorOrders, namedCategories, vendorProducts, vendorLocations }: { countryCode: string, vendor: Vendor, vendorAdmin: VendorAdmin, vendorOrders: Orders[] | null, namedCategories: string[], vendorProducts: HttpTypes.StoreProduct[] | null, vendorLocations?: any[] }) => {
   const selectedPeriod = '7d';
-
   // get the order data
   const currentOrderData: any[] | undefined = getTheEventTime(vendorOrders, "7d");
   const previousOrderData: any[] | undefined = getThePreviousEventTime(vendorOrders, "7d");
@@ -86,7 +85,7 @@ const VendorOverview = ({ countryCode, vendor, vendorAdmin, vendorOrders, namedC
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Header */}
-        <VendorHeader handleSubmit={handleProductSubmit} vendorData={vendorData} namedCategories={namedCategories} selectedPeriod={selectedPeriod} />
+        <VendorHeader handleSubmit={handleProductSubmit} vendorData={vendorData} namedCategories={namedCategories} selectedPeriod={selectedPeriod} vendorLocations={vendorLocations}/>
 
         {/* Metrics Grid */}
         <Metrics 
@@ -94,7 +93,7 @@ const VendorOverview = ({ countryCode, vendor, vendorAdmin, vendorOrders, namedC
         />
 
         {/* Main Content Grid */}
-        <MainContent countryCode={countryCode} handleSubmit={handleProductSubmit} vendorOrders={vendorOrders} vendorProducts={vendorProducts} namedCategories={namedCategories} />
+        <MainContent countryCode={countryCode} handleSubmit={handleProductSubmit} vendorOrders={vendorOrders} vendorProducts={vendorProducts} namedCategories={namedCategories} vendorLocations={vendorLocations}/>
 
         {/* Top Products */}
         <TopProducts />
