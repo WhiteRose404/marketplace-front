@@ -58,7 +58,7 @@ const VendorDashboard = async (props: Props) => {
   const vendorProducts = await retrieveProducts().catch(() => null);
   const collection = await listCategories();
   const locations = await getAllLocations(); // we can fetch the logs need to be integrated into the products creating
-
+  
   console.log('Vendor:', vendor, locations);
   if(!vendor || !vendorAdmin){
     return NotFound();

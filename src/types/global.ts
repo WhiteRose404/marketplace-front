@@ -49,6 +49,12 @@ export type VendorProduct = {
   description: string,
   category: string,
   images: string[],
+  // row_images: {
+  //   name: string,
+  //   type: string,
+  //   size: number,
+  //   data: any
+  // }[]
   options: { title: string, values: string[] }[],
   variants: {
     title: string,
