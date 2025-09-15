@@ -145,9 +145,11 @@ const Shipping: React.FC<ShippingProps> = ({
   }
 
   useEffect(() => {
-    setError(null)
+    setError(null);
+    handleSetShippingMethod(availableShippingMethods[0].id || "", "shipping") // handle this probably
   }, [isOpen])
 
+  return <></>
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">

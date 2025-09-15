@@ -23,6 +23,11 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
+        port: "8080"
+      },
+      {
+        protocol: "https",
+        hostname: "when-bucket-public.s3.gra.io.cloud.ovh.net" 
       },
       {
         protocol: "https",

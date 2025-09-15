@@ -46,7 +46,7 @@ const Addresses = ({
           level="h2"
           className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
         >
-          Shipping Address
+          Your Information
           {!isOpen && <CheckCircleSolid />}
         </Heading>
         {!isOpen && cart?.shipping_address && (
@@ -84,7 +84,7 @@ const Addresses = ({
               </div>
             )}
             <SubmitButton className="mt-6" data-testid="submit-address-button">
-              Continue to delivery
+              Continue to review
             </SubmitButton>
             <ErrorMessage error={message} data-testid="address-error-message" />
           </div>
@@ -106,7 +106,7 @@ const Addresses = ({
                       {cart.shipping_address.first_name}{" "}
                       {cart.shipping_address.last_name}
                     </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
+                    {/* <Text className="txt-medium text-ui-fg-subtle">
                       {cart.shipping_address.address_1}{" "}
                       {cart.shipping_address.address_2}
                     </Text>
@@ -116,7 +116,7 @@ const Addresses = ({
                     </Text>
                     <Text className="txt-medium text-ui-fg-subtle">
                       {cart.shipping_address.country_code?.toUpperCase()}
-                    </Text>
+                    </Text> */}
                   </div>
 
                   <div
@@ -129,12 +129,12 @@ const Addresses = ({
                     <Text className="txt-medium text-ui-fg-subtle">
                       {cart.shipping_address.phone}
                     </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
+                    {/* <Text className="txt-medium text-ui-fg-subtle">
                       {cart.email}
-                    </Text>
+                    </Text> */}
                   </div>
 
-                  <div
+                  {/* <div
                     className="flex flex-col w-1/3"
                     data-testid="billing-address-summary"
                   >
@@ -165,7 +165,7 @@ const Addresses = ({
                         </Text>
                       </>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ) : (

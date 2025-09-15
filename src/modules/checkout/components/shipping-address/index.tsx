@@ -21,14 +21,14 @@ const ShippingAddress = ({
   const [formData, setFormData] = useState<Record<string, any>>({
     "shipping_address.first_name": cart?.shipping_address?.first_name || "",
     "shipping_address.last_name": cart?.shipping_address?.last_name || "",
-    "shipping_address.address_1": cart?.shipping_address?.address_1 || "",
-    "shipping_address.company": cart?.shipping_address?.company || "",
-    "shipping_address.postal_code": cart?.shipping_address?.postal_code || "",
-    "shipping_address.city": cart?.shipping_address?.city || "",
-    "shipping_address.country_code": cart?.shipping_address?.country_code || "",
-    "shipping_address.province": cart?.shipping_address?.province || "",
+    "shipping_address.address_1": cart?.shipping_address?.address_1 || "placeholder-not-specified",
+    "shipping_address.company": cart?.shipping_address?.company || "placeholder-not-specified",
+    "shipping_address.postal_code": cart?.shipping_address?.postal_code || "0000",
+    "shipping_address.city": cart?.shipping_address?.city || "placeholder-not-specified",
+    "shipping_address.country_code": cart?.shipping_address?.country_code || "ma",
+    "shipping_address.province": cart?.shipping_address?.province || "placeholder-not-specified",
     "shipping_address.phone": cart?.shipping_address?.phone || "",
-    email: cart?.email || "",
+    email: cart?.email || "eddie@my-eddy.ma",
   })
 
   const countriesInRegion = useMemo(
@@ -54,12 +54,12 @@ const ShippingAddress = ({
         ...prevState,
         "shipping_address.first_name": address?.first_name || "",
         "shipping_address.last_name": address?.last_name || "",
-        "shipping_address.address_1": address?.address_1 || "",
-        "shipping_address.company": address?.company || "",
-        "shipping_address.postal_code": address?.postal_code || "",
-        "shipping_address.city": address?.city || "",
-        "shipping_address.country_code": address?.country_code || "",
-        "shipping_address.province": address?.province || "",
+        "shipping_address.address_1": address?.address_1 || "placeholder-not-specified",
+        "shipping_address.company": address?.company || "placeholder-not-specified",
+        "shipping_address.postal_code": address?.postal_code || "0000",
+        "shipping_address.city": address?.city || "placeholder-not-specified",
+        "shipping_address.country_code": address?.country_code || "dk",
+        "shipping_address.province": address?.province || "placeholder-not-specified",
         "shipping_address.phone": address?.phone || "",
       }))
 
@@ -86,6 +86,8 @@ const ShippingAddress = ({
       HTMLInputElement | HTMLInputElement | HTMLSelectElement
     >
   ) => {
+
+    console.log("hanling changes from ", formData)
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -129,7 +131,7 @@ const ShippingAddress = ({
           required
           data-testid="shipping-last-name-input"
         />
-        <Input
+        {/* <Input
           label="Address"
           name="shipping_address.address_1"
           autoComplete="address-line1"
@@ -180,9 +182,9 @@ const ShippingAddress = ({
           value={formData["shipping_address.province"]}
           onChange={handleChange}
           data-testid="shipping-province-input"
-        />
+        /> */}
       </div>
-      <div className="my-8">
+      {/* <div className="my-8">
         <Checkbox
           label="Billing address same as shipping address"
           name="same_as_billing"
@@ -190,9 +192,9 @@ const ShippingAddress = ({
           onChange={onChange}
           data-testid="billing-address-checkbox"
         />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <Input
+      </div> */}
+      <div className="grid grid-cols-1 gap-4 my-4">
+        {/* <Input
           label="Email"
           name="email"
           type="email"
@@ -202,7 +204,7 @@ const ShippingAddress = ({
           onChange={handleChange}
           required
           data-testid="shipping-email-input"
-        />
+        /> */}
         <Input
           label="Phone"
           name="shipping_address.phone"

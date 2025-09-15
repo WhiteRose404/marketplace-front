@@ -156,7 +156,7 @@ export default function ProductActions({
         >
           {!selectedVariant && !options
             ? "Select variant"
-            : !inStock || !isValidVariant
+            : !inStock
             ? "Out of stock"
             : "Add to cart"}
         </Button>

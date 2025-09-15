@@ -345,19 +345,19 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
       shipping_address: {
         first_name: formData.get("shipping_address.first_name"),
         last_name: formData.get("shipping_address.last_name"),
-        address_1: formData.get("shipping_address.address_1"),
-        address_2: "",
-        company: formData.get("shipping_address.company"),
-        postal_code: formData.get("shipping_address.postal_code"),
-        city: formData.get("shipping_address.city"),
-        country_code: formData.get("shipping_address.country_code"),
-        province: formData.get("shipping_address.province"),
+        address_1: formData.get("shipping_address.address_1") || "placeholder-not-specified",
+        address_2: "placeholder-not-specified",
+        company: formData.get("shipping_address.company") || "placeholder-not-specified",
+        postal_code: formData.get("shipping_address.postal_code") || "placeholder-not-specified",
+        city: formData.get("shipping_address.city") || "placeholder-not-specified",
+        country_code: formData.get("shipping_address.country_code") || "dk",
+        province: formData.get("shipping_address.province") || "placeholder-not-specified",
         phone: formData.get("shipping_address.phone"),
       },
-      email: formData.get("email"),
+      email: formData.get("email") || "customer@my-eddy.ma",
     } as any
 
-    const sameAsBilling = formData.get("same_as_billing")
+    const sameAsBilling = formData.get("same_as_billing") || "on"
     if (sameAsBilling === "on") data.billing_address = data.shipping_address
 
     if (sameAsBilling !== "on")
@@ -373,13 +373,15 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         province: formData.get("billing_address.province"),
         phone: formData.get("billing_address.phone"),
       }
+
     await updateCart(data)
   } catch (e: any) {
     return e.message
   }
 
   redirect(
-    `/${formData.get("shipping_address.country_code")}/checkout?step=delivery`
+    // `/${formData.get("shipping_address.country_code")}/checkout?step=delivery`
+    `/${formData.get("shipping_address.country_code") || "dk"}/checkout?step=review`
   )
 }
 

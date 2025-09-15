@@ -106,6 +106,7 @@ const Payment = ({
     setError(null)
   }, [isOpen])
 
+  return <></>
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
