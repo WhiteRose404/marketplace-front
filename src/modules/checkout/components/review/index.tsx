@@ -18,6 +18,8 @@ const Review = ({ cart }: { cart: any }) => {
     cart.shipping_methods.length > 0 &&
     (cart.payment_collection || paidByGiftcard)
 
+  console.log("Reviews", isOpen , cart, !!cart.shipping_address, !!cart.shipping_methods.length, !!cart.payment_collection)
+
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">

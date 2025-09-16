@@ -1,6 +1,7 @@
 "use server";
 
 import { listCategories } from "@lib/data/categories";
+import { listOrders } from "@lib/data/orders";
 import { retrieveOrders, retrieveVendor, retrieveVendorAdmin, retrieveProducts, getAllLocations } from "@lib/data/vendor";
 import VendorOverview from "@modules/account/components/vendor-overview";
 import NotFound from "app/not-found";
@@ -58,6 +59,11 @@ const VendorDashboard = async (props: Props) => {
   const vendorProducts = await retrieveProducts().catch(() => null);
   const collection = await listCategories();
   const locations = await getAllLocations(); // we can fetch the logs need to be integrated into the products creating
+
+  // list all recent products
+  const orders = await listOrders();
+
+  console.log("recent orders", orders);
   
   console.log('Vendor:', vendor, locations);
   if(!vendor || !vendorAdmin){

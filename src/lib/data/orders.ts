@@ -43,7 +43,7 @@ export const listOrders = async (
   }
 
   return sdk.client
-    .fetch<HttpTypes.StoreOrderListResponse>(`/store/orders`, {
+    .fetch<HttpTypes.StoreOrderListResponse>(`/vendors/orders`, {
       method: "GET",
       query: {
         limit,

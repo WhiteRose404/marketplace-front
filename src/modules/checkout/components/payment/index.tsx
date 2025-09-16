@@ -81,11 +81,15 @@ const Payment = ({
       const checkActiveSession =
         activeSession?.provider_id === selectedPaymentMethod
 
+
+      console.log("check Active session", checkActiveSession, availablePaymentMethods[0].id)
+
       if (!checkActiveSession) {
         await initiatePaymentSession(cart, {
-          provider_id: selectedPaymentMethod,
+          provider_id: selectedPaymentMethod || availablePaymentMethods[0].id,
         })
       }
+
 
       if (!shouldInputCard) {
         return router.push(
@@ -103,10 +107,24 @@ const Payment = ({
   }
 
   useEffect(() => {
+    const simulate = async ()=> {
+      setPaymentMethod(availablePaymentMethods[0].id)
+      console.log("availablePaymentMethods[0].id", availablePaymentMethods[0].id)
+      await handleSubmit();
+      console.log("debug set payment method", availablePaymentMethods[0].id)
+    }
+    simulate();
     setError(null)
-  }, [isOpen])
+  }, [isOpen]);
 
-  return <></>
+  useEffect(()=>{
+
+    // set the first default payment session
+    // setPaymentMethod("")
+    
+  }, [])
+
+  // return <></>
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
@@ -123,7 +141,7 @@ const Payment = ({
           Payment
           {!isOpen && paymentReady && <CheckCircleSolid />}
         </Heading>
-        {!isOpen && paymentReady && (
+        {!isOpen && false && paymentReady && (
           <Text>
             <button
               onClick={handleEdit}

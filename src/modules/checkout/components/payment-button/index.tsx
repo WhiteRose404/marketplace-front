@@ -25,6 +25,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     (cart.shipping_methods?.length ?? 0) < 1
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
+  console.log("Debuug, not ready ?", notReady, paymentSession?.provider_id)
 
   switch (true) {
     case isStripe(paymentSession?.provider_id):
