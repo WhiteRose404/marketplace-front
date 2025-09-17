@@ -113,7 +113,7 @@ const Payment = ({
       await handleSubmit();
       console.log("debug set payment method", availablePaymentMethods[0].id)
     }
-    simulate();
+    // simulate();
     setError(null)
   }, [isOpen]);
 

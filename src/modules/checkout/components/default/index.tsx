@@ -35,6 +35,8 @@ export default function ({
             await initiatePaymentSession(cart, {
                 provider_id: availablePaymentMethods[0].id,
             })
+
+            console.log("debugging cart still has", cart)
         }
         fill();
     }, []);

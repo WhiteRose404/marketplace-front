@@ -146,8 +146,8 @@ const Shipping: React.FC<ShippingProps> = ({
 
   useEffect(() => {
     setError(null);
-    handleSetShippingMethod(availableShippingMethods[0].id || "", "shipping") // handle this probably
-    console.log("debug set shipping method", availableShippingMethods[0].id)
+    // handleSetShippingMethod(availableShippingMethods[0].id || "", "shipping") // handle this probably
+    // console.log("debug set shipping method", availableShippingMethods[0].id)
   }, [isOpen])
 
   // return <></>
@@ -184,7 +184,7 @@ const Shipping: React.FC<ShippingProps> = ({
             </Text>
           )}
       </div>
-      {isOpen ? false && (
+      {isOpen ? (
         <>
           <div className="grid">
             <div className="flex flex-col">
