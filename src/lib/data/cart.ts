@@ -416,11 +416,16 @@ export async function placeOrder(cartId?: string) {
     headers,
   })
   .then(async (cartRes) => {
+    console.log("debuug got from order compilation the following", cartRes)
     const cartCacheTag = await getCacheTag("carts")
     revalidateTag(cartCacheTag)
     return cartRes
   })
-  .catch(medusaError)
+  // .catch(medusaError)
+  .catch((err)=>{
+    console.log("debug: error we got the following", err)
+    medusaError(err);
+  })
 
 
   if (cartRes?.type === "order") {
