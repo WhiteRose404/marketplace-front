@@ -16,6 +16,7 @@ import ProductCreationForm from "@modules/account/components/vendor-add-product"
 import RecentEvents from '../vendor-recent-events';
 
 import deleteProduct from '../vendor-server-exec/deleteProduct';
+import { deleteVendorProduct } from '../../../../../lib/data/vendor';
 
 import { OrderItem, ProductItem, ReviewItem, VendorAdmin, Vendor, Orders } from 'types/global';
 import { HttpTypes } from '@medusajs/types';
@@ -201,6 +202,7 @@ const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, 
           onViewAll={() => console.log('View all products')}
           maxItems={5}
           onProductDelete={deleteProduct}
+          // onProductDelete={deleteVendorProduct}
         />
 
         {/* <RecentEvents

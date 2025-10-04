@@ -16,6 +16,7 @@ import {
   Trash2,
   EyeOff
 } from 'lucide-react';
+import { HttpTypes } from '@medusajs/types';
 
 // Base interface that all item types must implement
 interface BaseItem {
@@ -84,6 +85,7 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
 
   // Close dropdown when clicking outside
   useEffect(() => {
+    console.log("got the following display Items", displayItems)
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setOpenDropdown(null);
@@ -102,7 +104,7 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
 
   const handleProductAction = (action: 'modify' | 'delete' | 'hide', productId: string) => {
     setOpenDropdown(null);
-    
+    console.log("got the action", action)
     switch (action) {
       case 'modify':
         onProductModify?.(productId);
@@ -113,6 +115,8 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
       case 'hide':
         onProductHide?.(productId);
         break;
+      default:
+        console.log("didn't catch that")
     }
   };
 
@@ -179,6 +183,7 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
 
     switch (item.type) {
       case 'order':
+        // need one asap to handle fullfilment and capture payment
         return (
           <>
             {baseImage}
