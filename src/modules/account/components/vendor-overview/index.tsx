@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from 'react';
+
 import Metrics from './vendor-metrics';
 import VendorHeader from './vendor-header';
 import MainContent from './vendor-main-content';
@@ -10,9 +12,11 @@ import { getTheEventTime, getThePreviousEventTime } from "../../../../lib/util/v
 import { VendorAdmin, Vendor, Orders } from 'types/global';
 import { HttpTypes } from '@medusajs/types';
 
-import handleProductSubmit from './vendor-server-exec/submitProduct'
+import handleProductSubmit from './vendor-server-exec/submitProduct';
 
 
+
+type MetricTypes = "products" | "orders" | "conversion" | "vistors" | "revenu";
 
 
 
@@ -25,6 +29,9 @@ const VendorOverview = ({ countryCode, vendor, vendorAdmin, vendorOrders, namedC
   // get the revenu
   const currentRevenuStrem = currentOrderData?.reduce((order) => order.price, 0);
   const previousRevenuStrem = previousOrderData?.reduce((order) => order.price, 0);
+
+  // switch between metrics
+  const [currentMetric, setCurrentMetric] = useState<MetricTypes>("products");
 
   // Mock vendor data - replace with your actual data
   const vendorData = {
@@ -85,15 +92,19 @@ const VendorOverview = ({ countryCode, vendor, vendorAdmin, vendorOrders, namedC
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Header */}
-        <VendorHeader handleSubmit={handleProductSubmit} vendorData={vendorData} namedCategories={namedCategories} selectedPeriod={selectedPeriod} vendorLocations={vendorLocations}/>
+        <VendorHeader 
+          handleSubmit={handleProductSubmit} vendorData={vendorData} namedCategories={namedCategories} selectedPeriod={selectedPeriod} vendorLocations={vendorLocations}/>
 
         {/* Metrics Grid */}
         <Metrics 
+          changeMetric={(metric: MetricTypes)=>{
+            setCurrentMetric(metric);
+          }}
           analytics={analytics}
         />
 
         {/* Main Content Grid */}
-        <MainContent countryCode={countryCode} handleSubmit={handleProductSubmit} vendorOrders={vendorOrders} vendorProducts={vendorProducts} namedCategories={namedCategories} vendorLocations={vendorLocations}/>
+        <MainContent currentMetric={currentMetric} countryCode={countryCode} handleSubmit={handleProductSubmit} vendorOrders={vendorOrders} vendorProducts={vendorProducts} namedCategories={namedCategories} vendorLocations={vendorLocations}/>
 
         {/* Top Products */}
         <TopProducts />

@@ -39,7 +39,7 @@ type VendorProduct = {
   }[]
 }
 
-const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, namedCategories, vendorLocations }: { countryCode: string, vendorOrders: Orders[] | null, vendorProducts: HttpTypes.StoreProduct[] | null, handleSubmit: any, namedCategories: string[], vendorLocations: any[] }) => {
+const MainContent = ({ currentMetric, countryCode, vendorOrders, vendorProducts, handleSubmit, namedCategories, vendorLocations }: { currentMetric: string, countryCode: string, vendorOrders: Orders[] | null, vendorProducts: HttpTypes.StoreProduct[] | null, handleSubmit: any, namedCategories: string[], vendorLocations: any[] }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isProductCreatingOpen, setIsProductCreatingOpen] = useState(false);
 
@@ -47,12 +47,13 @@ const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, 
   const transformedOrders: OrderItem[] | undefined = vendorOrders?.map(order => ({
     id: order.id,
     type: 'order' as const,
-    customer: order.customer,
-    product: order.product,
-    amount: order.amount,
+    customer: `Customer #${order.id.slice(order.id.length-2, order.id.length)}`,
+    products: order.items,
+    amount: `${order.total} MAD`,
     status: order.status,
-    date: order.date,
-    image: order.image
+    date: (new Date(order.shipping_methods[0].created_at)).toUTCString(),
+    // date: order.shipping_methods[0].created_at,
+    image: order.items[0].thumbnail,
   }));
 
 
@@ -178,6 +179,33 @@ const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, 
     setIsVisible(true);
   }, []);
 
+  const DisplayedMetric = ()=>{
+    switch(currentMetric){
+      case "products":
+        return (
+          <RecentEvents
+            title="Recent Products"
+            items={recentProducts}
+            onViewAll={() => console.log('View all products')}
+            maxItems={5}
+            onProductDelete={deleteProduct}
+            // onProductDelete={deleteVendorProduct}
+          />
+        )
+      case "orders":
+        console.log("orders", vendorOrders)
+        return (
+          <RecentEvents
+            title="Recent Orders"
+            items={transformedOrders}
+            onViewAll={() => console.log('View all orders')}
+            maxItems={5}
+          />
+        )
+      default: return <div>{currentMetric}</div>
+    }
+  }
+
   return (
     <>
       <ProductCreationForm
@@ -189,21 +217,16 @@ const MainContent = ({ countryCode, vendorOrders, vendorProducts, handleSubmit, 
       />
       <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
 
-        {/* Recent Orders */}
+
+        <DisplayedMetric />
         {/* <RecentEvents
-            title="Recent Orders"
-            items={transformedOrders}
-            onViewAll={() => console.log('View all orders')}
-            maxItems={5}
-          /> */}
-        <RecentEvents
           title="Recent Products"
           items={recentProducts}
           onViewAll={() => console.log('View all products')}
           maxItems={5}
           onProductDelete={deleteProduct}
           // onProductDelete={deleteVendorProduct}
-        />
+        /> */}
 
         {/* <RecentEvents
             title="Recent Reviews"

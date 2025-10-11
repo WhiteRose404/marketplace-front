@@ -13,7 +13,7 @@ import MetricCard from './metric';
 
 
 
-const Metrics = ({ analytics }: any) => {
+const Metrics = ({ analytics, changeMetric }: any) => {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(()=>{
@@ -27,24 +27,36 @@ const Metrics = ({ analytics }: any) => {
                 change={analytics.revenue.change}
                 icon={DollarSign}
                 suffix=" MAD"
+                onClick={()=>{
+                    changeMetric("revenu")
+                }}
             />
             <MetricCard
                 title="Orders"
                 value={analytics.orders.current || 0}
                 change={analytics.orders.change}
                 icon={ShoppingCart}
+                onClick={()=>{
+                    changeMetric("orders")
+                }}
             />
             <MetricCard
                 title="Store Visitors"
                 value={analytics.visitors.current}
                 change={analytics.visitors.change}
                 icon={Users}
+                onClick={()=>{
+                    changeMetric("vistors")
+                }}
             />
             <MetricCard
                 title="Active Products"
                 value={analytics.products.active}
                 change={analytics.products.current === 0 ? 0 : (analytics.products.current - analytics.products.draft) / analytics.products.current * 100}
                 icon={Package}
+                onClick={()=>{
+                    changeMetric("products")
+                }}
             />
             <MetricCard
                 title="Conversion Rate"
@@ -52,6 +64,9 @@ const Metrics = ({ analytics }: any) => {
                 change={analytics.conversion.change}
                 icon={TrendingUp}
                 suffix="%"
+                onClick={()=>{
+                    changeMetric("conversion")
+                }}
             />
         </div>
     )

@@ -181,6 +181,7 @@ const RecentEvents: React.FC<RecentEventsProps> = ({
       />
     );
 
+
     switch (item.type) {
       case 'order':
         // need one asap to handle fullfilment and capture payment
