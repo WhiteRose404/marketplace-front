@@ -71,7 +71,7 @@ const MainContent = ({ currentMetric, countryCode, vendorOrders, vendorProducts,
     image: product.thumbnail ? product.thumbnail : (product.images && product.images.length > 0) ? product.images[0] : `https://ui-avatars.com/api/?name=${product.title}`
   }))
 
-  console.log("Recent Products: ", recentProducts);
+  console.log("Recent products: ", vendorOrders);
 
   // Example review data
   const recentReviews: ReviewItem[] | undefined = [
@@ -202,7 +202,14 @@ const MainContent = ({ currentMetric, countryCode, vendorOrders, vendorProducts,
             maxItems={5}
           />
         )
-      default: return <div>{currentMetric}</div>
+      default: return (
+         <RecentEvents
+            title="Under construction"
+            items={[]}
+            onViewAll={() => console.log('Wait...')}
+            maxItems={5}
+          />
+      )
     }
   }
 

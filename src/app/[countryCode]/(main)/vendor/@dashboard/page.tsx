@@ -63,7 +63,7 @@ const VendorDashboard = async (props: Props) => {
   // list all recent products
   const orders = await listOrders();
 
-  console.log("recent orders", orders);
+  console.log("recent orders:::", orders);
   
   console.log('Vendor:', vendor, locations);
   if(!vendor || !vendorAdmin){

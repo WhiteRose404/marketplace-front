@@ -119,10 +119,10 @@ export const retrieveOrders =
       .fetch<{ orders: Orders[] }>(`/vendors/orders`, {
         method: "GET",
         query: {
-          fields: "*items",
+          fields: "*items,*customer",
         },
         headers,
-        next,
+        // next,
         // cache: "force-cache",
       })
       .then(({ orders }) => orders)

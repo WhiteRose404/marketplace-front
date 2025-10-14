@@ -21,6 +21,9 @@ type MetricTypes = "products" | "orders" | "conversion" | "vistors" | "revenu";
 
 
 const VendorOverview = ({ countryCode, vendor, vendorAdmin, vendorOrders, namedCategories, vendorProducts, vendorLocations }: { countryCode: string, vendor: Vendor, vendorAdmin: VendorAdmin, vendorOrders: Orders[] | null, namedCategories: string[], vendorProducts: HttpTypes.StoreProduct[] | null, vendorLocations?: any[] }) => {
+  // do a service in the front end that will abstract the fetching, instead of displaying the items passefilly
+  
+  
   const selectedPeriod = '7d';
   // get the order data
   const currentOrderData: any[] | undefined = getTheEventTime(vendorOrders, "7d");
